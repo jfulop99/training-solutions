@@ -1,4 +1,4 @@
-package classsctructureconstructors;
+package classsctructureintegrate;
 
 public class BankAccount {
     private String accountNumber;

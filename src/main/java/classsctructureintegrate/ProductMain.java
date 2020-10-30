@@ -1,32 +1,8 @@
-package classsctructureconstructors;
+package classsctructureintegrate;
 
 import java.util.Scanner;
 
-public class Product {
-    private String name;
-    private int price;
-
-    public Product(String name, int price) {
-        this.name = name;
-        this.price = price;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void increasePrice(int price) {
-        this.price = this.price + price;
-    }
-
-    public void decreasePrice(int price) {
-        this.price = this.price - price;
-    }
-
+public class ProductMain {
     public static void main(String[] args) {
         String productName;
         int price;
@@ -46,4 +22,5 @@ public class Product {
         product.decreasePrice(100);
         System.out.println("Product: " + product.getName() + " Price: " + product.getPrice());
     }
+
 }
