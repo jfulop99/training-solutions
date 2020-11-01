@@ -1,9 +1,9 @@
 package statements;
 
 public class Time {
-    int hour;
-    int min;
-    int sec;
+    private int hour;
+    private int min;
+    private int sec;
 
     public Time(int hour, int min, int sec) {
         this.hour = hour;
