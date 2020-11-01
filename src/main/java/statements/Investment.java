@@ -1,10 +1,10 @@
 package statements;
 
 public class Investment {
-    double cost;
-    int fund;
-    int interestRate;
-    boolean active;
+    private double cost;
+    private int fund;
+    private int interestRate;
+    private boolean active;
 
     public Investment(int fund, int interestRate) {
         this.fund = fund;
