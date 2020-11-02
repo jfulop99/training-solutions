@@ -24,7 +24,7 @@ public class BankAccount {
     }
 
     public void transfer(BankAccount to, int amount) {
-        to.balance = to.balance + amount;
-        this.balance = this.balance - amount;
+        to.deposit(amount);
+        this.withdraw(amount);
     }
 }
