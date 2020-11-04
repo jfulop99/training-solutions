@@ -26,12 +26,12 @@ public class Product {
     }
 
     public boolean areTheyEqual(Product product){
-        return name.equals(product.getName());
+        return name.equals(product.getName()) && (Math.abs(code.length() - product.code.length()) < 2);
     }
 
     public static void main(String[] args) {
         Product prduct1 = new Product("Bicikli", "12345678");
-        Product prduct2 = new Product("Kerékpár", "87654321");
+        Product prduct2 = new Product("Kerékpár", "8765432");
 
 
         System.out.println(prduct1.areTheyEqual(prduct2));
