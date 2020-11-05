@@ -15,6 +15,7 @@ public class InputNames {
         int i = 1;
         for (String elem: tomb) {
             System.out.println(i + ".elem: " + elem);
+            i++;
         }
     }
 }
