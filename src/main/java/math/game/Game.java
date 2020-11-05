@@ -3,8 +3,8 @@ package math.game;
 public class Game {
     public static void main(String[] args) {
 
-        Warrior warrior1 = new Warrior("John Doe", new Point(9, 9));
-        Warrior warrior2 = new Warrior("Jack Daniels", new Point(1, 4));
+        Warrior warrior1 = new Warrior("John Doe    ", new Point(0, 0));
+        Warrior warrior2 = new Warrior("Jack Daniels", new Point(50, 50));
 
         System.out.println("Start: (menetelés)");
         System.out.println(warrior1.toString());
