@@ -48,9 +48,9 @@ public class Office {
         String temp;
         for (MeetingRoom meetingRoom: meetingRooms) {
             if (meetingRoom.getName().toUpperCase().indexOf(part.toUpperCase()) >= 0){
-//                System.out.print("Name: " + meetingRoom.getName()); // Ha kell az összes előfordulás szükség lehet a névre is
-                System.out.println(" - Length: " + meetingRoom.getLength() + " - Width: " + meetingRoom.getWidht() + " - Area: " + meetingRoom.getArea());
-                return; // mert csak az első előfordulást kéri a leírás
+//                System.out.print("Name: " + meetingRoom.getName() + " - "); // Ha kell az összes előfordulás szükség lehet a névre is
+                System.out.println("Length: " + meetingRoom.getLength() + " - Width: " + meetingRoom.getWidht() + " - Area: " + meetingRoom.getArea());
+//                return; // ha csak az első előfordulás kell
             }
         }
     }
