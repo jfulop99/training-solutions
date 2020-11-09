@@ -1,7 +1,5 @@
 package arraylist;
 
-import classsctructureconstructors.Book;
-
 import java.util.ArrayList;
 import java.util.List;
 
