@@ -1,6 +1,4 @@
-package classsctructureintegrate;
-
-import java.util.Scanner;
+package classstructureintegrate;
 
 public class Product {
     private String name;
