@@ -17,7 +17,7 @@ public class GentlemanTest {
 
     }
     @Test
-    public void testCreate2() {
+    void testCreate2() {
         Gentleman gentleman2 = new Gentleman();
 
         String greeting = gentleman2.sayHello();
