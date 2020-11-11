@@ -15,10 +15,7 @@ public class DictionaryItem {
 
     public void addTranslation(List<String> translations){
         for (String translation: translations) {
-            if (this.translations.contains(translation)){
-                continue;
-            }
-            else {
+            if (!this.translations.contains(translation)){
                 this.translations.add(translation);
             }
         }
