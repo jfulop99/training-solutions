@@ -6,10 +6,7 @@ public class Phone {
 
     @Override
     public String toString() {
-        return "Phone{" +
-                "prefix='" + prefix + '\'' +
-                ", number='" + number + '\'' +
-                '}';
+        return prefix + "-" + number;
     }
 
     public String getPrefix() {

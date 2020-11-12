@@ -11,9 +11,4 @@ public class PhoneParser {
         phone = new Phone(phonenumber.substring(0,dashPosition), phonenumber.substring(dashPosition+1));
         return phone;
     }
-
-    public static void main(String[] args) {
-        PhoneParser phoneParser = new PhoneParser();
-        System.out.println(phoneParser.parsePhone("32-12345678"));
-    }
 }
