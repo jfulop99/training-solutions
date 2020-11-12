@@ -8,7 +8,7 @@ public class PhoneParser {
         Phone phone;
         int dashPosition;
         dashPosition = phonenumber.indexOf("-");
-        phone = new Phone(Integer.parseInt(phonenumber.substring(0,dashPosition)), Integer.parseInt(phonenumber.substring(dashPosition+1,phonenumber.length()))  );
+        phone = new Phone(phonenumber.substring(0,dashPosition), phonenumber.substring(dashPosition+1));
         return phone;
     }
 
