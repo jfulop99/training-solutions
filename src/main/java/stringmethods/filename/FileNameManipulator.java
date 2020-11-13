@@ -5,40 +5,91 @@ public class FileNameManipulator {
         if (isEmpty(str)) {
             throw new IllegalArgumentException("Empty string!");
         }
-        return str.charAt(str.length() - 1);
+        return str.charAt(str.trim().length() - 1);
     }
 
     public String findFileExtension(String fileName) {
+        if (isEmpty(fileName)) {
+            throw new IllegalArgumentException("Invalid file name!");
+        }
+        if (fileName.indexOf('.') == fileName.trim().length()-1){
+            throw new IllegalArgumentException("Invalid file name!");
+        }
+        if (fileName.trim().indexOf('.') < 0) {
+            throw new IllegalArgumentException("Invalid file name!");
+        }
+        if (fileName.trim().indexOf('.') == 0){
+            throw new IllegalArgumentException("Invalid file name!");
+        }
         return fileName.substring(fileName.lastIndexOf('.'));
     }
 
     public boolean identifyFilesByExtension(String ext, String fileName) {
-        return (fileName.toUpperCase().indexOf(ext.toUpperCase()) > 0);
+        if(isEmpty(ext)) {
+            throw new IllegalArgumentException("Invalid argument!");
+        }
+        else {
+            if(isEmpty(fileName)) {
+                throw new IllegalArgumentException("Invalid argument!");
+            }
+            else {
+                if (fileName.indexOf('.') == fileName.trim().length()-1){
+                    throw new IllegalArgumentException("Invalid argument!");
+                }
+                if (fileName.trim().indexOf('.') < 0) {
+                    throw new IllegalArgumentException("Invalid argument!");
+                }
+                if (fileName.trim().indexOf('.') == 0){
+                    throw new IllegalArgumentException("Invalid argument!");
+                }
+                return (fileName.toUpperCase().indexOf(ext.toUpperCase()) > 0);
+            }
+        }
+
     }
 
     public boolean compareFilesByName(String fileName, String actualFileName) {
-        return (fileName.compareTo(actualFileName) == 0);
+        if (isEmpty(fileName)){
+            throw new IllegalArgumentException("Invalid argument!");
+        }
+        else {
+            if (isEmpty(actualFileName)) {
+                throw new IllegalArgumentException("Invalid argument!");
+            }
+            else {
+                return (fileName.toLowerCase().compareTo(actualFileName.toLowerCase()) == 0);
+            }
+        }
+
     }
 
     public String changeExtensionToLowerCase(String fileName) {
         if (isEmpty(fileName)) {
+            throw new IllegalArgumentException("Empty string!");
+        }
+        if (fileName.indexOf('.') == fileName.trim().length()-1){
             throw new IllegalArgumentException("Invalid argument!");
         }
-        if (fileName.indexOf('.') == fileName.length()-1){
+        if (fileName.trim().indexOf('.') < 0) {
             throw new IllegalArgumentException("Invalid argument!");
         }
-        if (fileName.indexOf('.') < 0) {
+        if (fileName.trim().indexOf('.') == 0) {
             throw new IllegalArgumentException("Invalid argument!");
         }
-        return fileName.substring(0, fileName.indexOf('.')) + fileName.substring(fileName.indexOf('.')).toLowerCase();
+        return fileName.trim().substring(0, fileName.trim().indexOf('.')) + fileName.trim().substring(fileName.indexOf('.')).toLowerCase();
     }
 
     public String replaceStringPart(String fileName, String present, String target) {
-        return fileName.replace(present, target);
+        if (isEmpty(fileName)){
+            throw new IllegalArgumentException("Empty string!");
+        }
+        else {
+                return fileName.replace(present, target);
+            }
     }
 
     private boolean isEmpty(String name) {
-        if (name == null || name.length() == 0) {
+        if (name == null || name.trim().length() == 0) {
             return true;
         }
         return false;
