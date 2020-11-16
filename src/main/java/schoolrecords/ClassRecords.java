@@ -47,12 +47,11 @@ public class ClassRecords {
         double sum = 0.0D;
         int counter = 0;
         for (Student studentItem:students) {
-//                try {
-                    sum += studentItem.calculateAverage();
-                    counter++;
-//                }catch (ArithmeticException e){
-//                    // csak elkapjuk, ne dobjon hibát
-//                }
+            sum += studentItem.calculateAverage();
+            counter++;
+            if (sum == 0) {
+                throw new ArithmeticException("No marks present, average calculation aborted!");
+            }
         }
         if (counter == 0) {
             throw new ArithmeticException("No student in the class, average calculation aborted!");
@@ -67,13 +66,16 @@ public class ClassRecords {
     public double calculateClassAverageBySubject(Subject subject) {
         double sum = 0.0D;
         int counter = 0;
+        double studentAverage = 0.0D;
         for (Student studentItem:students) {
-            try {
-                sum += studentItem.calculateSubjectAverage(subject);
-                counter++;
-            }catch (ArithmeticException e) {
-                // Csak elkapjuk a kivételt, ha az adott tanulónal nics jegye a tárgyból
-            }
+                studentAverage = studentItem.calculateSubjectAverage(subject);
+                sum += studentAverage;
+                if (studentAverage != 0) {
+                    counter++;
+                }
+//                if (sum == 0) {
+//                    throw new ArithmeticException("No marks present, average calculation aborted!");
+//                }
         }
         if (counter == 0) {
             throw new ArithmeticException("No student in the class, average calculation aborted!");
