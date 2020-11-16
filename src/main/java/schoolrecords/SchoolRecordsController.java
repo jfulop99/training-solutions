@@ -282,11 +282,15 @@ public class SchoolRecordsController {
                     schoolRecordsController.averageBySubject();
                     break;
                 case 8:
-                    try {
-                        schoolRecordsController.averageByStudents();
-                    }catch (IllegalStateException e) {
-                        System.out.println(e.getMessage());
+                    for (StudyResultByName item:schoolRecordsController.firstClass.listStudyResults()) {
+                        System.out.println(String.format("%-20s - Average: %4.2f", item.getStudentName(), item.getStudyAverage()));
                     }
+
+//                    try {
+//                        schoolRecordsController.averageByStudents();
+//                    }catch (IllegalStateException e) {
+//                        System.out.println(e.getMessage());
+//                    }
                     break;
                 case 9:
                     try {
