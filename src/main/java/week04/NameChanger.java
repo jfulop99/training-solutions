@@ -23,3 +23,14 @@ public class NameChanger {
         return fullName.equals(otherfullname);
     }
 }
+/*
+Készítsd el a week04.NameChanger osztályt, melynek privát attribútuma legyen a fullName:String,
+mely egy ember teljes nevét reprezentálja.
+A fullName attributum <vezetéknév><szóköz><keresztnév> formátumban épül fel (Mással most nem foglalkozunk).
+A Konstruktor állítsa be a paraméterül kapott értékre az adattagot,
+de ha az érték null, vagy üres String akkor dobjon IllegalArgumentExceptiont, a következő üzenettel: "Invalid Name:<paraméter értéke>"
+
+Legyen egy changeFirstName(String firstName) metódusa, ami megváltoztatja az objektum állapotát és kicseréli a vezetéknevet a paraméterül kapott értékre.
+
+Készíts két teszt esetet, az egyikben ellenőrizd a konstruktor működését, míg a másikban a changeFirstName metódus működését.
+ */
