@@ -18,7 +18,7 @@ public class PrintFormat {
     public String printFormattedText(Double number){
 //      "Total is: 561 123,20 Ft"
 
-        return String.format("Total is: %,8.2f Ft", number);
+        return String.format(new Locale("hu", "HU"),"Total is: %,.2f Ft", number);
     }
     public String printFormattedText(int count, String fruit){
 //      "We counted 6 APPLES in the basket"
