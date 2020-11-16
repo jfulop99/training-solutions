@@ -18,4 +18,8 @@ public class NameChanger {
     public void changeFirstName(String firstName) {
         fullName = firstName + fullName.substring(fullName.indexOf(" "));
     }
+
+    public boolean isTheSame(String otherfullname){
+        return fullName.equals(otherfullname);
+    }
 }

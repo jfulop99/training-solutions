@@ -1,9 +1,9 @@
 package week04;
 
+import classstructuremethods.NoteMain;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NameChangerTest {
 
@@ -31,5 +31,10 @@ public class NameChangerTest {
         assertEquals("John Doe", nameChanger.getFullName());
         nameChanger.changeFirstName("Jack");
         assertEquals("Jack Doe", nameChanger.getFullName());
+    }
+    @Test
+    public void IsTheSameTest() {
+        NameChanger nameChanger = new NameChanger("Doe John");
+        assertTrue(nameChanger.isTheSame("Doe John"));
     }
 }
