@@ -164,7 +164,7 @@ public class SchoolRecordsController {
         }
     }
 
-    public void averageBySubject() {
+    public void averageClassBySubject() {
         for (String subjectname: subjectNames) {
             try {
                 System.out.println(String.format("Subject: %20s - Average: %4.2f", subjectname, firstClass.calculateClassAverageBySubject(new Subject(subjectname))));
@@ -208,18 +208,18 @@ public class SchoolRecordsController {
         Student studentItem = firstClass.findStudentByName(students.get(studentIndex));
         if (!subj) {
             try {
-                System.out.println(String.format("Student: %20s - Average: %4.2f", studentItem.getName(), studentItem.calculateAverage()));
+                System.out.println(String.format("Student: %-20s - Average: %4.2f", studentItem.getName(), studentItem.calculateAverage()));
             } catch (ArithmeticException e) {
-                System.out.println(String.format("Student: %20s - %s", studentItem.getName(), e.getMessage()));
+                System.out.println(String.format("Student: %-20s - %s", studentItem.getName(), e.getMessage()));
             }
         }
         else {
             System.out.println(studentItem.getName() + " : Average by subjects:");
             for (String subjectname: subjectNames) {
                 try {
-                    System.out.println(String.format("Subject: %20s - Average: %4.2f", subjectname, studentItem.calculateSubjectAverage(new Subject(subjectname))));
+                    System.out.println(String.format("Subject: %-20s - Average: %4.2f", subjectname, studentItem.calculateSubjectAverage(new Subject(subjectname))));
                 }catch (ArithmeticException e) {
-                    System.out.println(String.format("Subject: %20s - %30s", subjectname, e.getMessage()));
+                    System.out.println(String.format("Subject: %-20s - %30s", subjectname, e.getMessage()));
                 }
             }
         }
@@ -279,7 +279,7 @@ public class SchoolRecordsController {
                     System.out.println(schoolRecordsController.calculateClassAverage());
                     break;
                 case 7:
-                    schoolRecordsController.averageBySubject();
+                    schoolRecordsController.averageClassBySubject();
                     break;
                 case 8:
                     for (StudyResultByName item:schoolRecordsController.firstClass.listStudyResults()) {
