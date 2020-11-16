@@ -71,13 +71,27 @@ public class SchoolRecordsController {
             message = e.getMessage();
         }
         if (victim != null) {
+            System.out.println("Az áldozat: " + victim.getName());
             int tutorIndex = 0;
             for (Tutor tutor:tutors) {
                 System.out.println(tutorIndex+1 + ". " + tutor.getName());
                 tutorIndex++;
             }
             System.out.println("Select tutor 1 - " + tutorIndex);
-            tutorIndex = sc.nextInt() - 1;
+            int maxIndex = tutorIndex;
+            tutorIndex = 0;
+            while (tutorIndex == 0) {
+                try {
+                    tutorIndex = sc.nextInt();
+                } catch (InputMismatchException e) {
+                    tutorIndex = 0;
+                }
+                if (tutorIndex < 1 || tutorIndex > maxIndex) {
+                    tutorIndex = 0;
+                }
+            }
+            tutorIndex--;
+
             int subjectIndex = 0;
             for (String subjectName:subjectNames) {
                 if (tutors.get(tutorIndex).tutorTeachingSubject(new Subject(subjectName))) {
@@ -86,7 +100,19 @@ public class SchoolRecordsController {
                 }
             }
             System.out.println("Select subject 1 - " + subjectIndex);
-            subjectIndex = sc.nextInt() - 1;
+            maxIndex = subjectIndex;
+            subjectIndex = 0;
+            while (subjectIndex == 0) {
+                try {
+                    subjectIndex = sc.nextInt();
+                }catch (InputMismatchException e) {
+                    subjectIndex = 0;
+                }
+                if (subjectIndex < 1 || subjectIndex > maxIndex) {
+                    subjectIndex = 0;
+                }
+            }
+            subjectIndex--;
             int markIndex = 0;
             for (MarkType mark: MarkType.values()) {
                 System.out.println((char)(65+markIndex) + " " + mark.getDescription() + " " + mark.getValue());
@@ -109,10 +135,96 @@ public class SchoolRecordsController {
                 }
             }
             victim.grading(new Mark(MarkType.valueOf(mark) , new Subject(subjectNames.get(subjectIndex)), tutors.get(tutorIndex)));
+            message = "Sikeres rögzítés";
         }
 
         return message;
     }
+
+    public String calculateClassAverage() {
+        String message = "";
+        try {
+            message = "Az ostály átlaga: " + firstClass.calculateClassAverage();
+        }catch (ArithmeticException e) {
+            message = e.getMessage();
+        }
+        return message;
+    }
+
+    public void averageByStudents() {
+        String studentNames = firstClass.listStudentNames();
+        Scanner sc = new Scanner(studentNames).useDelimiter(", ");
+        while (sc.hasNext()) {
+            Student studentItem = firstClass.findStudentByName(sc.next());
+            try {
+                System.out.println(String.format("Student: %20s - Average: %4.2f",studentItem.getName(), studentItem.calculateAverage()));
+            }catch (ArithmeticException e) {
+                System.out.println(String.format("Student: %20s - %s",studentItem.getName(),e.getMessage()));
+            }
+        }
+    }
+
+    public void averageBySubject() {
+        for (String subjectname: subjectNames) {
+            try {
+                System.out.println(String.format("Subject: %20s - Average: %4.2f", subjectname, firstClass.calculateClassAverageBySubject(new Subject(subjectname))));
+            }catch (ArithmeticException e) {
+                System.out.println(String.format("Subject: %20s - %30s", subjectname, e.getMessage()));
+            }
+        }
+    }
+
+    public void averageByStudent(boolean subj) {
+        int studentIndex = 0;
+        String studentNames = firstClass.listStudentNames();
+        try {
+            firstClass.findStudentByName("Test");
+        }catch (IllegalArgumentException e) {
+            // Csak elkapás
+        }
+        List<String> students = new ArrayList<>();
+        Scanner sc = new Scanner(studentNames).useDelimiter(", ");
+        while (sc.hasNext()) {
+            students.add(sc.next());
+            System.out.println(studentIndex + 1 + ". " + students.get(studentIndex));
+            studentIndex++;
+        }
+        System.out.println("Select student: 1 - " + (studentIndex));
+        sc.close();
+        sc = new Scanner(System.in);
+        int maxIndex = studentIndex;
+        studentIndex = 0;
+        while (studentIndex == 0) {
+            try {
+                studentIndex = sc.nextInt();
+            } catch (InputMismatchException e) {
+                studentIndex = 0;
+            }
+            if (studentIndex < 1 || studentIndex > maxIndex) {
+                studentIndex = 0;
+            }
+        }
+        studentIndex--;
+        Student studentItem = firstClass.findStudentByName(students.get(studentIndex));
+        if (!subj) {
+            try {
+                System.out.println(String.format("Student: %20s - Average: %4.2f", studentItem.getName(), studentItem.calculateAverage()));
+            } catch (ArithmeticException e) {
+                System.out.println(String.format("Student: %20s - %s", studentItem.getName(), e.getMessage()));
+            }
+        }
+        else {
+            System.out.println(studentItem.getName() + " : Average by subjects:");
+            for (String subjectname: subjectNames) {
+                try {
+                    System.out.println(String.format("Subject: %20s - Average: %4.2f", subjectname, studentItem.calculateSubjectAverage(new Subject(subjectname))));
+                }catch (ArithmeticException e) {
+                    System.out.println(String.format("Subject: %20s - %30s", subjectname, e.getMessage()));
+                }
+            }
+        }
+    }
+
     public void printMenu() {
         System.out.println( " 1. Diákok nevének listázása\n\r" +
                             " 2. Diák név alapján keresése\n\r" +
@@ -136,14 +248,11 @@ public class SchoolRecordsController {
         Scanner scanner = new Scanner(System.in);
         while (run) {
             schoolRecordsController.printMenu();
-//           if (scanner.hasNextLine()) {
-//               scanner.nextLine();
-//           }
             int select = 0;
             try {
                 select = Integer.parseInt(scanner.nextLine());
             }catch (NumberFormatException e){
-                System.out.println("Hibás adat! " + e);
+                System.out.println("Hibás adat! " + e.getMessage());
                 continue;
             }
             switch (select) {
@@ -164,9 +273,35 @@ public class SchoolRecordsController {
                     break;
                 case 5:
                     System.out.println("Feleltetés");
-                    schoolRecordsController.repetition();
+                    System.out.println(schoolRecordsController.repetition());
                     break;
-
+                case 6:
+                    System.out.println(schoolRecordsController.calculateClassAverage());
+                    break;
+                case 7:
+                    schoolRecordsController.averageBySubject();
+                    break;
+                case 8:
+                    try {
+                        schoolRecordsController.averageByStudents();
+                    }catch (IllegalStateException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 9:
+                    try {
+                        schoolRecordsController.averageByStudent(false);
+                    }catch (IllegalStateException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 10:
+                    try {
+                        schoolRecordsController.averageByStudent(true);
+                    }catch (IllegalStateException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
                 case 11:
                     run = false;
                     break;

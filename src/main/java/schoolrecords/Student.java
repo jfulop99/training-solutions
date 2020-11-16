@@ -25,9 +25,9 @@ public class Student {
             sum += mark.getMarkType().getValue();
             counter++;
         }
-        if (counter == 0) {
-            throw new ArithmeticException("No marks present, average calculation aborted!");
-        }
+//        if (counter == 0) {
+//            throw new ArithmeticException("No marks present, average calculation aborted!");
+//        }
         return Math.round(((double)sum / counter) * 100) / 100.0;
     }
 
@@ -40,9 +40,9 @@ public class Student {
                 counter++;
             }
         }
-        if (counter == 0) {
-            throw new ArithmeticException("No marks present, average calculation aborted!");
-        }
+//        if (counter == 0) {
+//            throw new ArithmeticException("No marks present, average calculation aborted!");
+//        }
         return Math.round(((double)sum / counter) * 100) / 100.0;
     }
 

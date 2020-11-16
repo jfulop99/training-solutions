@@ -47,8 +47,12 @@ public class ClassRecords {
         double sum = 0.0D;
         int counter = 0;
         for (Student studentItem:students) {
-                sum += studentItem.calculateAverage();
-                counter++;
+//                try {
+                    sum += studentItem.calculateAverage();
+                    counter++;
+//                }catch (ArithmeticException e){
+//                    // csak elkapjuk, ne dobjon hibát
+//                }
         }
         if (counter == 0) {
             throw new ArithmeticException("No student in the class, average calculation aborted!");
