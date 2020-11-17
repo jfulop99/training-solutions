@@ -23,6 +23,8 @@ public class SchoolRecordsController {
             subjects.add(new Subject(subjectname));
         }
         tutors = Arrays.asList( new Tutor("Kiss Géza", Arrays.asList(new Subject("földrajz"), new Subject("biológia"))),
+                                new Tutor("Kovács Béla", Arrays.asList(new Subject("magyar irodalom"), new Subject("történelm"))),
+                                new Tutor("Kissné Kovács Etelka", Arrays.asList(new Subject("testnevelés"), new Subject("angol"), new Subject("fizika"))),
                                 new Tutor("Nagy Aranka", Arrays.asList(new Subject("matematika"))));
     }
 
@@ -51,6 +53,7 @@ public class SchoolRecordsController {
                     tutorIndex = sc.nextInt();
                 } catch (InputMismatchException e) {
                     tutorIndex = 0;
+                    sc.nextLine();
                 }
                 if (tutorIndex < 1 || tutorIndex > maxIndex) {
                     tutorIndex = 0;
@@ -73,6 +76,7 @@ public class SchoolRecordsController {
                     subjectIndex = sc.nextInt();
                 }catch (InputMismatchException e) {
                     subjectIndex = 0;
+                    sc.nextLine();
                 }
                 if (subjectIndex < 1 || subjectIndex > maxIndex) {
                     subjectIndex = 0;
@@ -81,11 +85,15 @@ public class SchoolRecordsController {
             subjectIndex--;
             int markIndex = 0;
             for (MarkType mark: MarkType.values()) {
-                System.out.println((char)(65+markIndex) + " " + mark.getDescription() + " " + mark.getValue());
+                System.out.println(String.format("%1s - ( %1d ) %-15s",MarkType.values()[markIndex], mark.getValue(), mark.getDescription()));
                 markIndex++;
             }
             String mark = "";
-            System.out.println("Select mark A - E");
+            System.out.print("Select mark ( ");
+            for (MarkType item:MarkType.values()) {
+                System.out.print(item + " ");
+            }
+            System.out.println(")");
             while (mark.equals("")) {
                 mark = sc.nextLine();
                 mark = mark.toUpperCase();
@@ -94,7 +102,7 @@ public class SchoolRecordsController {
                     case "B":
                     case "C":
                     case "D":
-                    case "E":
+                    case "F":
                         break;
                     default:
                         mark = "";
