@@ -104,16 +104,15 @@ public class ClassRecords {
     }
 
     public String listStudentNames() {
-        if (students.size() == 0) {
-            return "Nincs diák az osztályban";
-        }
+        String message = null;
         StringBuilder studentName = new StringBuilder();
         studentName.append("");
         for (Student studentItem:students) {
             studentName.append(studentItem.getName() + ", ");
         }
         studentName.setLength(studentName.length()-2);
-        return studentName.toString().trim();
+        message = studentName.toString().trim();
+        return message;
     }
 
     public List<StudyResultByName> listStudyResults() {
@@ -142,7 +141,7 @@ public class ClassRecords {
     }
 
     private boolean isEmpty(String data) {
-        return (data == null || data.length() == 0);
+        return (data == null || data.trim().length() == 0);
     }
 
 }

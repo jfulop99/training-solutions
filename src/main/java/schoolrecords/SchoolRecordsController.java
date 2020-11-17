@@ -25,45 +25,11 @@ public class SchoolRecordsController {
         tutors = Arrays.asList( new Tutor("Kiss Géza", Arrays.asList(new Subject("földrajz"), new Subject("biológia"))),
                                 new Tutor("Nagy Aranka", Arrays.asList(new Subject("matematika"))));
     }
-    public String removeStudent(String name) {
-        String message;
-        try {
-            message =firstClass.removeStudent(firstClass.findStudentByName(name)) ? "Sikeres ": "SIKERTELEN ";
-            message += "törlés!";
-        }catch (IllegalArgumentException e) {
-            message = e.getMessage();
-        }catch (IllegalStateException e) {
-            message = e.getMessage();
-        }
-        return message;
-    }
 
-    public String addStudent(String name) {
-        String message;
-        try {
-            message = firstClass.addStudent(new Student(name)) ? "Sikeres rögzítés" : "Van már ilyen nevű diák!";
-        }catch (IllegalArgumentException e) {
-            message = e.getMessage();
-        }
-        return message;
-    }
-
-    public String findStudent(String name) {
-        String message;
-        try {
-            message = firstClass.findStudentByName(name).toString();
-        }catch (IllegalArgumentException e){
-            message = e.getMessage();
-        }catch (IllegalStateException e) {
-            message = e.getMessage();
-        }
-
-        return message;
-    }
-
-    public String repetition() {
+    public void repetition() {
         String message = "";
         Student victim = null;
+        System.out.println("Feleltetés");
         Scanner sc = new Scanner(System.in);
         try {
             victim = firstClass.repetition();
@@ -137,89 +103,58 @@ public class SchoolRecordsController {
             victim.grading(new Mark(MarkType.valueOf(mark) , new Subject(subjectNames.get(subjectIndex)), tutors.get(tutorIndex)));
             message = "Sikeres rögzítés";
         }
-
-        return message;
-    }
-
-    public String calculateClassAverage() {
-        String message = "";
-        try {
-            message = "Az ostály átlaga: " + firstClass.calculateClassAverage();
-        }catch (ArithmeticException e) {
-            message = e.getMessage();
-        }
-        return message;
-    }
-
-    public void averageByStudents() {
-        String studentNames = firstClass.listStudentNames();
-        Scanner sc = new Scanner(studentNames).useDelimiter(", ");
-        while (sc.hasNext()) {
-            Student studentItem = firstClass.findStudentByName(sc.next());
-            try {
-                System.out.println(String.format("Student: %20s - Average: %4.2f",studentItem.getName(), studentItem.calculateAverage()));
-            }catch (ArithmeticException e) {
-                System.out.println(String.format("Student: %20s - %s",studentItem.getName(),e.getMessage()));
-            }
-        }
-    }
-
-    public void averageClassBySubject() {
-        for (String subjectname: subjectNames) {
-            try {
-                System.out.println(String.format("Subject: %20s - Average: %4.2f", subjectname, firstClass.calculateClassAverageBySubject(new Subject(subjectname))));
-            }catch (ArithmeticException e) {
-                System.out.println(String.format("Subject: %20s - %30s", subjectname, e.getMessage()));
-            }
-        }
+        System.out.println(message);
+        return;
     }
 
     public void averageByStudent(boolean subj) {
         int studentIndex = 0;
-        String studentNames = firstClass.listStudentNames();
+        String studentNames = null;
         try {
-            firstClass.findStudentByName("Test");
-        }catch (IllegalArgumentException e) {
-            // Csak elkapás
+                studentNames = firstClass.listStudentNames();
+        }catch (StringIndexOutOfBoundsException e) {
+            System.out.println("No student in the class " + e.getMessage());
         }
-        List<String> students = new ArrayList<>();
-        Scanner sc = new Scanner(studentNames).useDelimiter(", ");
-        while (sc.hasNext()) {
-            students.add(sc.next());
-            System.out.println(studentIndex + 1 + ". " + students.get(studentIndex));
-            studentIndex++;
-        }
-        System.out.println("Select student: 1 - " + (studentIndex));
-        sc.close();
-        sc = new Scanner(System.in);
-        int maxIndex = studentIndex;
-        studentIndex = 0;
-        while (studentIndex == 0) {
-            try {
-                studentIndex = sc.nextInt();
-            } catch (InputMismatchException e) {
-                studentIndex = 0;
+        if (studentNames != null) {
+            List<String> students = new ArrayList<>();
+            Scanner sc = new Scanner(studentNames).useDelimiter(", ");
+            while (sc.hasNext()) {
+                students.add(sc.next());
+                System.out.println(studentIndex + 1 + ". " + students.get(studentIndex));
+                studentIndex++;
             }
-            if (studentIndex < 1 || studentIndex > maxIndex) {
-                studentIndex = 0;
-            }
-        }
-        studentIndex--;
-        Student studentItem = firstClass.findStudentByName(students.get(studentIndex));
-        if (!subj) {
-            try {
-                System.out.println(String.format("Student: %-20s - Average: %4.2f", studentItem.getName(), studentItem.calculateAverage()));
-            } catch (ArithmeticException e) {
-                System.out.println(String.format("Student: %-20s - %s", studentItem.getName(), e.getMessage()));
-            }
-        }
-        else {
-            System.out.println(studentItem.getName() + " : Average by subjects:");
-            for (String subjectname: subjectNames) {
+            System.out.println("Select student: 1 - " + (studentIndex));
+            sc.close();
+            sc = new Scanner(System.in);
+            int maxIndex = studentIndex;
+            studentIndex = 0;
+            while (studentIndex == 0) {
                 try {
-                    System.out.println(String.format("Subject: %-20s - Average: %4.2f", subjectname, studentItem.calculateSubjectAverage(new Subject(subjectname))));
-                }catch (ArithmeticException e) {
-                    System.out.println(String.format("Subject: %-20s - %30s", subjectname, e.getMessage()));
+                    studentIndex = sc.nextInt();
+                } catch (InputMismatchException e) {
+                    sc.nextLine();
+                    studentIndex = 0;
+                }
+                if (studentIndex < 1 || studentIndex > maxIndex) {
+                    studentIndex = 0;
+                }
+            }
+            studentIndex--;
+            Student studentItem = firstClass.findStudentByName(students.get(studentIndex));
+            if (!subj) {
+                try {
+                    System.out.println(String.format("Student: %-20s - Average: %4.2f", studentItem.getName(), studentItem.calculateAverage()));
+                } catch (ArithmeticException e) {
+                    System.out.println(String.format("Student: %-20s - %s", studentItem.getName(), e.getMessage()));
+                }
+            } else {
+                System.out.println(studentItem.getName() + " : Average by subjects:");
+                for (String subjectname : subjectNames) {
+                    try {
+                        System.out.println(String.format("Subject: %-20s - Average: %4.2f", subjectname, studentItem.calculateSubjectAverage(new Subject(subjectname))));
+                    } catch (ArithmeticException e) {
+                        System.out.println(String.format("Subject: %-20s - %30s", subjectname, e.getMessage()));
+                    }
                 }
             }
         }
@@ -256,55 +191,77 @@ public class SchoolRecordsController {
                 continue;
             }
             switch (select) {
-                case 1:
-                    System.out.println(schoolRecordsController.firstClass.listStudentNames());
+                case 1:     //Diákok nevének listázása
+                    try {
+                        System.out.println(schoolRecordsController.firstClass.listStudentNames());
+                    }catch (StringIndexOutOfBoundsException e) {
+                        System.out.println("No student in the class " + e.getMessage());
+                    }
                     break;
-                case 2:
+                case 2:     //Diák név alapján keresése
                     System.out.println("Add meg a keresendő diák nevét!");
-                    System.out.println(schoolRecordsController.findStudent(scanner.nextLine()));
+                    try {
+                        System.out.println(schoolRecordsController.firstClass.findStudentByName(scanner.nextLine()).toString());
+                    }catch (IllegalArgumentException e){
+                        System.out.println(e.getMessage());
+                    }catch (IllegalStateException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
-                case 3:
+                case 3:     //Diák létrehozása
                     System.out.println("Add meg az új diák nevét!");
-                    System.out.println(schoolRecordsController.addStudent(scanner.nextLine()));
+                    try {
+                        System.out.println(schoolRecordsController.firstClass.addStudent(new Student(scanner.nextLine())) ? "Sikeres rögzítés" : "Van már ilyen nevű diák!");
+                    }catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
-                case 4:
+                case 4:     //Diák név alapján törlése
                     System.out.println("Add meg a törlendő diák nevét!");
-                    System.out.println(schoolRecordsController.removeStudent(scanner.nextLine()));
-                    break;
-                case 5:
-                    System.out.println("Feleltetés");
-                    System.out.println(schoolRecordsController.repetition());
-                    break;
-                case 6:
-                    System.out.println(schoolRecordsController.calculateClassAverage());
-                    break;
-                case 7:
-                    schoolRecordsController.averageClassBySubject();
-                    break;
-                case 8:
-                    for (StudyResultByName item:schoolRecordsController.firstClass.listStudyResults()) {
-                        System.out.println(String.format("%-20s - Average: %4.2f", item.getStudentName(), item.getStudyAverage()));
-                    }
-
-//                    try {
-//                        schoolRecordsController.averageByStudents();
-//                    }catch (IllegalStateException e) {
-//                        System.out.println(e.getMessage());
-//                    }
-                    break;
-                case 9:
                     try {
-                        schoolRecordsController.averageByStudent(false);
+                        System.out.println(schoolRecordsController.firstClass.removeStudent(schoolRecordsController.firstClass.findStudentByName(scanner.nextLine())) ? "Sikeres ": "SIKERTELEN " +  "törlés!");
+                    }catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
                     }catch (IllegalStateException e) {
                         System.out.println(e.getMessage());
                     }
                     break;
-                case 10:
+                case 5:     //Diák feleltetése
+                    schoolRecordsController.repetition();
+                    break;
+                case 6:     //Osztályátlag kiszámolása
                     try {
-                        schoolRecordsController.averageByStudent(true);
-                    }catch (IllegalStateException e) {
+                        System.out.println("Az ostály átlaga: " + schoolRecordsController.firstClass.calculateClassAverage());
+                    }catch (ArithmeticException e) {
                         System.out.println(e.getMessage());
                     }
+                    break;
+                case 7:     //Tantárgyi átlag kiszámolása
+                    for (String subjectname: schoolRecordsController.subjectNames) {
+                        try {
+                            System.out.println(String.format("Subject: %20s - Average: %4.2f", subjectname, schoolRecordsController.firstClass.calculateClassAverageBySubject(new Subject(subjectname))));
+                        }catch (ArithmeticException e) {
+                            System.out.println(String.format("Subject: %20s - %30s", subjectname, e.getMessage()));
+                        }
+                    }
+                    break;
+                case 8:     //Diákok átlagának megjelenítése
+                    List<StudyResultByName> studyResultByNames = new ArrayList<>();
+                    studyResultByNames = schoolRecordsController.firstClass.listStudyResults();
+                    if (studyResultByNames.size() > 0) {
+                        for (StudyResultByName item : studyResultByNames) {
+                            System.out.println(String.format("%-20s - Average: %4.2f", item.getStudentName(), item.getStudyAverage()));
+                        }
+                    }
+                    else {
+                        System.out.println("No student in the class ");
+                    }
+                    break;
+                case 9:     //Diák átlagának kiírása
+                    schoolRecordsController.averageByStudent(false);
+                    break;
+                case 10:    //Diák tantárgyakhoz tartozó átlagának kiírása
+                    schoolRecordsController.averageByStudent(true);
                     break;
                 case 11:
                     run = false;
@@ -315,7 +272,5 @@ public class SchoolRecordsController {
                 scanner.nextLine();
             }
         }
-
-
     }
 }
