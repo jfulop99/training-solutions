@@ -57,6 +57,13 @@ public class UrlManagerTest {
     }
 
     @Test
+    public void testCreateMissingProtocolWithPort() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> new UrlManager("www.google.com:8000"));
+        assertEquals("Invalid url", ex.getMessage());
+    }
+
+
+    @Test
     public void testHasProperty() {
         String url = "HTTPS://EarthQuake.USgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02";
 

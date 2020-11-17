@@ -8,11 +8,11 @@ public class UrlManager {
     private String query;
 
     public UrlManager(String url) {
+        url = url.trim();
         if (isEmpty(url)) {
             throw new IllegalArgumentException();
         }
-        String restUrl = url.trim();
-        if (url.indexOf(':') < 0) {
+        if (url.indexOf("://") < 0) {
             throw new IllegalArgumentException("Invalid url");
         }
         protocol = url.substring(0, url.indexOf(':'));
@@ -20,7 +20,7 @@ public class UrlManager {
             throw new IllegalArgumentException();
         }
         protocol = protocol.toLowerCase();
-        restUrl = url.substring(url.indexOf(':') + 3);
+        String restUrl = url.substring(url.indexOf(':') + 3);
         if (restUrl == null || restUrl.length() == 0) {
             throw new IllegalArgumentException("Invalid url");
         }
