@@ -10,8 +10,7 @@ public class NumberGuesser {
 
         System.out.println("Kitaláltam egy számot!");
         Scanner scanner = new Scanner(System.in);
-        int number = rnd.nextInt(101
-        );
+        int number = rnd.nextInt(101);
         int i = 0;
         int guess = 0;
         boolean run = true;
