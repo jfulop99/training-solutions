@@ -27,6 +27,10 @@ public class NumberGuesser {
                 System.out.println("A kitalált szám " + (number > guess ? "nagyobb!" : "kisebb!"));
                 i++;
             }
+            if (i == 7){
+                run = false;
+                System.out.println("Vesztettél!");
+            }
         }while (run);
     }
 }
