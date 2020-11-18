@@ -1,31 +1,46 @@
 package algorithmsdecision.bankaccounts;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TransactionExecutorTest {
+    @BeforeEach
+    public void setUp(){
 
-    List<BankAccount> accounts = Arrays.asList(
-            new BankAccount("Fred", "123-324-123", 100),
-            new BankAccount("Kate", "133-324-123", 2000),
-            new BankAccount("Mary", "143-324-123", 90)
-    );
+        accounts.add(new BankAccount("Fred", "123-324-123", 100));
+        accounts.add(new BankAccount("Kate", "133-324-123", 2000));
+        accounts.add(new BankAccount("Mary", "143-324-123", 90));
 
-    List<Transaction> transactions = Arrays.asList(
-            new Transaction("123-324-123", TransactionOperation.CREDIT, 2000, LocalDateTime.MIN),
-            new Transaction("133-324-123", TransactionOperation.DEBIT, 200, LocalDateTime.MIN),
-            new Transaction("143-324-123", TransactionOperation.DEBIT, 2000, LocalDateTime.MIN)
-    );
+        transactions.add(new Transaction("123-324-123", TransactionOperation.CREDIT, 2000, LocalDateTime.MIN));
+        transactions.add(new Transaction("133-324-123", TransactionOperation.DEBIT, 200, LocalDateTime.MIN));
+        transactions.add(new Transaction("143-324-123", TransactionOperation.DEBIT, 2000, LocalDateTime.MIN));
 
+    }
+//    List<BankAccount> accounts = Arrays.asList(
+//            new BankAccount("Fred", "123-324-123", 100),
+//            new BankAccount("Kate", "133-324-123", 2000),
+//            new BankAccount("Mary", "143-324-123", 90)
+//    );
+//
+//    List<Transaction> transactions = Arrays.asList(
+//            new Transaction("123-324-123", TransactionOperation.CREDIT, 2000, LocalDateTime.MIN),
+//            new Transaction("133-324-123", TransactionOperation.DEBIT, 200, LocalDateTime.MIN),
+//            new Transaction("143-324-123", TransactionOperation.DEBIT, 2000, LocalDateTime.MIN)
+//    );
+
+    List<BankAccount> accounts = new ArrayList<>();
+    List<Transaction> transactions = new ArrayList<>();
     TransactionExecutor test = new TransactionExecutor();
 
     @Test
-    public void testExecuteBankAccountCredit() {
+     void testExecuteBankAccountCredit() {
 
         test.executeTransactions(transactions, accounts);
         assertEquals(2100, accounts.get(0).getBalance());
@@ -33,7 +48,7 @@ public class TransactionExecutorTest {
     }
 
     @Test
-    public void testExecuteBankAccountDebitWithDrawOk() {
+     void testExecuteBankAccountDebitWithDrawOk() {
 
         test.executeTransactions(transactions, accounts);
         assertEquals(1800, accounts.get(1).getBalance());
@@ -41,7 +56,7 @@ public class TransactionExecutorTest {
     }
 
     @Test
-    public void testExecuteBankAccountDebitWithDrawNotOk() {
+     void testExecuteBankAccountDebitWithDrawNotOk() {
 
         test.executeTransactions(transactions, accounts);
         assertEquals(90, accounts.get(2).getBalance());
