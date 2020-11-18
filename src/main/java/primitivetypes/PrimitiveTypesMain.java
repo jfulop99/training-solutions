@@ -9,7 +9,7 @@ public class PrimitiveTypesMain {
             System.out.println(Integer.toBinaryString(i));
         }
 
-        System.out.println(new Integer(1) + new Integer(2));
+        //System.out.println(new Integer(1) + new Integer(2));
 
     }
 }
