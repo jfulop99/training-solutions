@@ -5,9 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class NumberStatistics {
-    private List<Integer> numbers = new ArrayList();
+    private List<Integer> numbers;
 
-    public NumberStatistics(List numbers) {
+    public NumberStatistics(List<Integer> numbers)
+    {
         this.numbers = numbers;
     }
 
