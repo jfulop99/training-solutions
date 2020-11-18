@@ -29,7 +29,7 @@ public class NumberGuesser {
             }
             if (i == 7){
                 run = false;
-                System.out.println("Vesztettél!");
+                System.out.println("Vesztettél! A " + number + " gondoltam.");
             }
         }while (run);
     }
