@@ -1,7 +1,6 @@
 package schoolrecords;
 
-import javax.print.DocFlavor;
-import java.lang.reflect.Array;
+import java.awt.image.Kernel;
 import java.util.*;
 
 public class SchoolRecordsController {
@@ -31,95 +30,120 @@ public class SchoolRecordsController {
     public void repetition() {
         String message = "";
         Student victim = null;
-        System.out.println("Feleltetés");
-        Scanner sc = new Scanner(System.in);
+        System.out.println("Feleltetés:\n\r");
+
         try {
             victim = firstClass.repetition();
         }catch (IllegalStateException e) {
             message = e.getMessage();
         }
         if (victim != null) {
-            System.out.println("Az áldozat: " + victim.getName());
-            int tutorIndex = 0;
-            for (Tutor tutor:tutors) {
-                System.out.println(tutorIndex+1 + ". " + tutor.getName());
-                tutorIndex++;
-            }
-            System.out.println("Select tutor 1 - " + tutorIndex);
-            int maxIndex = tutorIndex;
-            tutorIndex = 0;
-            while (tutorIndex == 0) {
-                try {
-                    tutorIndex = sc.nextInt();
-                } catch (InputMismatchException e) {
-                    tutorIndex = 0;
-                    sc.nextLine();
-                }
-                if (tutorIndex < 1 || tutorIndex > maxIndex) {
-                    tutorIndex = 0;
-                }
-            }
-            tutorIndex--;
+            System.out.println("Az áldozat: " + victim.getName() + "\n\r");
 
-            int subjectIndex = 0;
-            for (String subjectName:subjectNames) {
-                if (tutors.get(tutorIndex).tutorTeachingSubject(new Subject(subjectName))) {
-                    System.out.println(subjectIndex + 1 + ". " + subjectName);
-                    subjectIndex++;
-                }
-            }
-            System.out.println("Select subject 1 - " + subjectIndex);
-            maxIndex = subjectIndex;
-            subjectIndex = 0;
-            while (subjectIndex == 0) {
-                try {
-                    subjectIndex = sc.nextInt();
-                }catch (InputMismatchException e) {
-                    subjectIndex = 0;
-                    sc.nextLine();
-                }
-                if (subjectIndex < 1 || subjectIndex > maxIndex) {
-                    subjectIndex = 0;
-                }
-            }
-            subjectIndex--;
-            int markIndex = 0;
-            for (MarkType mark: MarkType.values()) {
-                System.out.println(String.format("%1s - ( %1d ) %-15s",MarkType.values()[markIndex], mark.getValue(), mark.getDescription()));
-                markIndex++;
-            }
-            String mark = "";
-            System.out.print("Select mark ( ");
-            for (MarkType item:MarkType.values()) {
-                System.out.print(item + " ");
-            }
-            System.out.println(")");
-            while (mark.equals("")) {
-                mark = sc.nextLine();
-                mark = mark.toUpperCase();
-                switch (mark) {
-                    case "A":
-                    case "B":
-                    case "C":
-                    case "D":
-                    case "F":
-                        break;
-                    default:
-                        mark = "";
-                }
-            }
-            victim.grading(new Mark(MarkType.valueOf(mark) , new Subject(subjectNames.get(subjectIndex)), tutors.get(tutorIndex)));
-            message = "Sikeres rögzítés";
+            int selectedTutor = selectTutor();
+
+            int selectedSubject = selectSubject(selectedTutor);
+
+            String selectedMark = selectMark();
+
+            victim.grading(new Mark(MarkType.valueOf(selectedMark) , new Subject(subjectNames.get(selectedSubject)), tutors.get(selectedTutor)));
         }
-        System.out.println(message);
+        System.out.println("Sikeres rögzítés");
         return;
     }
 
-    public void averageByStudent(boolean subj) {
+    public int selectTutor() {
+
+        Scanner sc = new Scanner(System.in);
+        int tutorIndex = 0;
+        for (Tutor tutor:tutors) {
+            System.out.println(tutorIndex+1 + ". " + tutor.getName());
+            tutorIndex++;
+        }
+        System.out.println("Select tutor 1 - " + tutorIndex);
+        int maxIndex = tutorIndex;
+        tutorIndex = 0;
+        while (tutorIndex == 0) {
+            try {
+                tutorIndex = sc.nextInt();
+            } catch (InputMismatchException e) {
+                tutorIndex = 0;
+                sc.nextLine();
+            }
+            if (tutorIndex < 1 || tutorIndex > maxIndex) {
+                tutorIndex = 0;
+            }
+        }
+        tutorIndex--;
+        return tutorIndex;
+    }
+
+    public int selectSubject(int tutorIndex) {
+
+        Scanner sc = new Scanner(System.in);
+        int subjectIndex = 0;
+        for (String subjectName:subjectNames) {
+            if (tutors.get(tutorIndex).tutorTeachingSubject(new Subject(subjectName))) {
+                System.out.println(subjectIndex + 1 + ". " + subjectName);
+                subjectIndex++;
+            }
+        }
+        System.out.println("Select subject 1 - " + subjectIndex);
+        int maxIndex = subjectIndex;
+        subjectIndex = 0;
+        while (subjectIndex == 0) {
+            try {
+                subjectIndex = sc.nextInt();
+            }catch (InputMismatchException e) {
+                subjectIndex = 0;
+                sc.nextLine();
+            }
+            if (subjectIndex < 1 || subjectIndex > maxIndex) {
+                subjectIndex = 0;
+            }
+        }
+        subjectIndex--;
+        return subjectIndex;
+    }
+
+    public String selectMark() {
+
+        Scanner sc = new Scanner(System.in);
+        int markIndex = 0;
+        for (MarkType mark: MarkType.values()) {
+            System.out.println(String.format("%1s - ( %1d ) %-15s",MarkType.values()[markIndex], mark.getValue(), mark.getDescription()));
+            markIndex++;
+        }
+        String mark = "";
+        System.out.print("Select mark ( ");
+        for (MarkType item:MarkType.values()) {
+            System.out.print(item + " ");
+        }
+        System.out.println(")");
+        while (mark.equals("")) {
+            mark = sc.nextLine();
+            mark = mark.toUpperCase();
+            switch (mark) {
+                case "A":
+                case "B":
+                case "C":
+                case "D":
+                case "F":
+                    break;
+                default:
+                    mark = "";
+            }
+        }
+        return mark;
+    }
+
+    public Student selectStudent() {
+
         int studentIndex = 0;
         String studentNames = null;
+        Student studentItem = null;
         try {
-                studentNames = firstClass.listStudentNames();
+            studentNames = firstClass.listStudentNames();
         }catch (StringIndexOutOfBoundsException e) {
             System.out.println("No student in the class " + e.getMessage());
         }
@@ -148,25 +172,31 @@ public class SchoolRecordsController {
                 }
             }
             studentIndex--;
-            Student studentItem = firstClass.findStudentByName(students.get(studentIndex));
+            studentItem = firstClass.findStudentByName(students.get(studentIndex));
+        }
+        return studentItem;
+    }
+
+    public void averageByStudent(boolean subj) {
+
+            Student selectedStudent = selectStudent();
             if (!subj) {
                 try {
-                    System.out.println(String.format("Student: %-20s - Average: %4.2f", studentItem.getName(), studentItem.calculateAverage()));
+                    System.out.println(String.format("Student: %-20s - Average: %4.2f", selectedStudent.getName(), selectedStudent.calculateAverage()));
                 } catch (ArithmeticException e) {
-                    System.out.println(String.format("Student: %-20s - %s", studentItem.getName(), e.getMessage()));
+                    System.out.println(String.format("Student: %-20s - %s", selectedStudent.getName(), e.getMessage()));
                 }
             } else {
-                System.out.println(studentItem.getName() + " : Average by subjects:");
+                System.out.println(selectedStudent.getName() + " : Average by subjects:");
                 for (String subjectname : subjectNames) {
                     try {
-                        System.out.println(String.format("Subject: %-20s - Average: %4.2f", subjectname, studentItem.calculateSubjectAverage(new Subject(subjectname))));
+                        System.out.println(String.format("Subject: %-20s - Average: %4.2f", subjectname, selectedStudent.calculateSubjectAverage(new Subject(subjectname))));
                     } catch (ArithmeticException e) {
                         System.out.println(String.format("Subject: %-20s - %30s", subjectname, e.getMessage()));
                     }
                 }
             }
         }
-    }
 
     public void printMenu() {
         System.out.println( " 1. Diákok nevének listázása\n\r" +
@@ -178,7 +208,7 @@ public class SchoolRecordsController {
                             " 7. Tantárgyi átlag kiszámolása\n\r" +
                             " 8. Diákok átlagának megjelenítése\n\r" +
                             " 9. Diák átlagának kiírása\n\r" +
-                            "10. Diák tantárgyhoz tartozó átlagának kiírása\n\r" +
+                            "10. Diák tantárgyakhoz tartozó átlagának kiírása\n\r" +
                             "11. Kilépés");
     }
 
@@ -219,7 +249,10 @@ public class SchoolRecordsController {
                 case 3:     //Diák létrehozása
                     System.out.println("Add meg az új diák nevét!");
                     try {
-                        System.out.println(schoolRecordsController.firstClass.addStudent(new Student(scanner.nextLine())) ? "Sikeres rögzítés" : "Van már ilyen nevű diák!");
+                        String studentName = scanner.nextLine();
+
+
+                        System.out.println(schoolRecordsController.firstClass.addStudent(new Student(studentName)) ? "Sikeres rögzítés" : "Van már ilyen nevű diák!");
                     }catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }
