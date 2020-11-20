@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Main {
 
-    List<Integer> getIndexesOfChar(String str, char c) {
+    List<Integer> getIndexesOfChar1(String str, char c) {
         List<Integer> result = new ArrayList<>();
         int found = 0;
         int fromIndex = 0;
@@ -22,13 +22,27 @@ public class Main {
         return result;
     }
 
+    List<Integer> getIndexesOfChar2(String str, char c) {
+        List<Integer> result = new ArrayList<>();
+
+        int i = 0;
+        while (i < str.length()) {
+            if (str.charAt(i) == c) {
+                result.add(i);
+            }
+            i++;
+        }
+        return result;
+    }
+
         public static void main(String[] args) {
         Main main = new Main();
 
-            String str = "Abrkadabra";
+            String str = "abrakadabra";
             char c = 'a';
-            System.out.println(main.getIndexesOfChar(str,c));
+            System.out.println(main.getIndexesOfChar1(str,c));
 
+            System.out.println(main.getIndexesOfChar2(str,c));
         }
 
 
