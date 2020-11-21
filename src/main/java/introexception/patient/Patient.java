@@ -13,12 +13,19 @@ public class Patient {
         else {
             throw new IllegalArgumentException();
         }
-        if (ssnValidator.isValidSsn(socialSecurityNumber)){
-            this.socialSecurityNumber = socialSecurityNumber;
+
+        try {
+            ssnValidator.isValidSsn(socialSecurityNumber);
+        }catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException(iae);
         }
-        else {
-            throw new IllegalArgumentException();
-        }
+        this.socialSecurityNumber = socialSecurityNumber;
+        //        if (ssnValidator.isValidSsn(socialSecurityNumber)){
+//            this.socialSecurityNumber = socialSecurityNumber;
+//        }
+//        else {
+//            throw new IllegalArgumentException();
+//        }
 
         if (yearOfBirth >= 1900){
             this.yearOfBirth = yearOfBirth;

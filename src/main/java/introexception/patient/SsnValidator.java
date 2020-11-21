@@ -6,8 +6,8 @@ public class SsnValidator {
         try {
             Integer.parseInt(ssn);
         } catch (IllegalArgumentException e) {
-            valid = false;
-            //throw new IllegalArgumentException();
+            //valid = false;
+            throw new IllegalArgumentException();
         }
         if (valid){
             valid = (ssn.length() != 9) ? false : true;
