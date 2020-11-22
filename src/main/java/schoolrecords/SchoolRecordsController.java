@@ -35,7 +35,7 @@ public class SchoolRecordsController {
         try {
             victim = firstClass.repetition();
         }catch (IllegalStateException e) {
-            message = e.getMessage();
+            System.out.println(e.getMessage());
         }
         if (victim != null) {
             System.out.println("Az áldozat: " + victim.getName() + "\n\r");
@@ -47,8 +47,8 @@ public class SchoolRecordsController {
             String selectedMark = selectMark();
 
             victim.grading(new Mark(MarkType.valueOf(selectedMark) , new Subject(subjectNames.get(selectedSubject)), tutors.get(selectedTutor)));
+            System.out.println("Sikeres rögzítés");
         }
-        System.out.println("Sikeres rögzítés");
         return;
     }
 
@@ -179,7 +179,8 @@ public class SchoolRecordsController {
 
     public void averageByStudent(boolean subj) {
 
-            Student selectedStudent = selectStudent();
+        Student selectedStudent = selectStudent();
+        if (selectedStudent != null) {
             if (!subj) {
                 try {
                     System.out.println(String.format("Student: %-20s - Average: %4.2f", selectedStudent.getName(), selectedStudent.calculateAverage()));
@@ -197,6 +198,85 @@ public class SchoolRecordsController {
                 }
             }
         }
+    }
+
+    public void printStudentAverage() {
+        List<StudyResultByName> studyResultByNames = new ArrayList<>();
+        studyResultByNames = firstClass.listStudyResults();
+        if (studyResultByNames.size() > 0) {
+            for (StudyResultByName item : studyResultByNames) {
+                System.out.println(String.format("%-20s - Average: %4.2f", item.getStudentName(), item.getStudyAverage()));
+            }
+        }
+        else {
+            System.out.println("No student in the class ");
+        }
+    }
+
+    public void printClassAverageBySubject() {
+        for (String subjectname: subjectNames) {
+            try {
+                System.out.println(String.format("Subject: %20s - Average: %4.2f", subjectname, firstClass.calculateClassAverageBySubject(new Subject(subjectname))));
+            }catch (ArithmeticException e) {
+                System.out.println(String.format("Subject: %20s - %30s", subjectname, e.getMessage()));
+            }
+        }
+    }
+
+    public void printClassAverage() {
+        try {
+            System.out.println("Az ostály átlaga: " + firstClass.calculateClassAverage());
+        }catch (ArithmeticException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void printStudents() {
+        try {
+            System.out.println(firstClass.listStudentNames());
+        }catch (StringIndexOutOfBoundsException e) {
+            System.out.println("No student in the class " + e.getMessage());
+        }
+    }
+
+    public void findStudent() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Add meg a keresendő diák nevét!");
+        try {
+            System.out.println(firstClass.findStudentByName(scanner.nextLine()).toString());
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void addNewStudent() {
+        Scanner scanner =new Scanner(System.in);
+        System.out.println("Add meg az új diák nevét!");
+        try {
+            String studentName = scanner.nextLine();
+
+
+            System.out.println(firstClass.addStudent(new Student(studentName)) ? "Sikeres rögzítés" : "Van már ilyen nevű diák!");
+        }catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void removeStudent() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Add meg a törlendő diák nevét!");
+        try {
+            System.out.println(firstClass.removeStudent(firstClass.findStudentByName(scanner.nextLine())) ? "Sikeres ": "SIKERTELEN " +  "törlés!");
+        }catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
 
     public void printMenu() {
         System.out.println( " 1. Diákok nevének listázása\n\r" +
@@ -225,78 +305,32 @@ public class SchoolRecordsController {
             try {
                 select = Integer.parseInt(scanner.nextLine());
             }catch (NumberFormatException e){
-                System.out.println("Hibás adat! " + e.getMessage());
-                continue;
+                select = 12;
             }
             switch (select) {
                 case 1:     //Diákok nevének listázása
-                    try {
-                        System.out.println(schoolRecordsController.firstClass.listStudentNames());
-                    }catch (StringIndexOutOfBoundsException e) {
-                        System.out.println("No student in the class " + e.getMessage());
-                    }
+                    schoolRecordsController.printStudents();
                     break;
                 case 2:     //Diák név alapján keresése
-                    System.out.println("Add meg a keresendő diák nevét!");
-                    try {
-                        System.out.println(schoolRecordsController.firstClass.findStudentByName(scanner.nextLine()).toString());
-                    }catch (IllegalArgumentException e){
-                        System.out.println(e.getMessage());
-                    }catch (IllegalStateException e) {
-                        System.out.println(e.getMessage());
-                    }
+                    schoolRecordsController.findStudent();
                     break;
                 case 3:     //Diák létrehozása
-                    System.out.println("Add meg az új diák nevét!");
-                    try {
-                        String studentName = scanner.nextLine();
-
-
-                        System.out.println(schoolRecordsController.firstClass.addStudent(new Student(studentName)) ? "Sikeres rögzítés" : "Van már ilyen nevű diák!");
-                    }catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                    }
+                    schoolRecordsController.addNewStudent();
                     break;
                 case 4:     //Diák név alapján törlése
-                    System.out.println("Add meg a törlendő diák nevét!");
-                    try {
-                        System.out.println(schoolRecordsController.firstClass.removeStudent(schoolRecordsController.firstClass.findStudentByName(scanner.nextLine())) ? "Sikeres ": "SIKERTELEN " +  "törlés!");
-                    }catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                    }catch (IllegalStateException e) {
-                        System.out.println(e.getMessage());
-                    }
+                    schoolRecordsController.removeStudent();
                     break;
                 case 5:     //Diák feleltetése
                     schoolRecordsController.repetition();
                     break;
                 case 6:     //Osztályátlag kiszámolása
-                    try {
-                        System.out.println("Az ostály átlaga: " + schoolRecordsController.firstClass.calculateClassAverage());
-                    }catch (ArithmeticException e) {
-                        System.out.println(e.getMessage());
-                    }
+                    schoolRecordsController.printClassAverage();
                     break;
                 case 7:     //Tantárgyi átlag kiszámolása
-                    for (String subjectname: schoolRecordsController.subjectNames) {
-                        try {
-                            System.out.println(String.format("Subject: %20s - Average: %4.2f", subjectname, schoolRecordsController.firstClass.calculateClassAverageBySubject(new Subject(subjectname))));
-                        }catch (ArithmeticException e) {
-                            System.out.println(String.format("Subject: %20s - %30s", subjectname, e.getMessage()));
-                        }
-                    }
+                    schoolRecordsController.printClassAverageBySubject();
                     break;
                 case 8:     //Diákok átlagának megjelenítése
-                    List<StudyResultByName> studyResultByNames = new ArrayList<>();
-                    studyResultByNames = schoolRecordsController.firstClass.listStudyResults();
-                    if (studyResultByNames.size() > 0) {
-                        for (StudyResultByName item : studyResultByNames) {
-                            System.out.println(String.format("%-20s - Average: %4.2f", item.getStudentName(), item.getStudyAverage()));
-                        }
-                    }
-                    else {
-                        System.out.println("No student in the class ");
-                    }
+                    schoolRecordsController.printStudentAverage();
                     break;
                 case 9:     //Diák átlagának kiírása
                     schoolRecordsController.averageByStudent(false);
@@ -304,9 +338,11 @@ public class SchoolRecordsController {
                 case 10:    //Diák tantárgyakhoz tartozó átlagának kiírása
                     schoolRecordsController.averageByStudent(true);
                     break;
-                case 11:
+                case 11:    //Exit
                     run = false;
                     break;
+                default:
+                    System.out.println("Hibás választás!");
             }
             if (select != 11) {
                 System.out.println("Press ENTER to continue.");
