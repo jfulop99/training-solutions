@@ -2,14 +2,15 @@ package week05d02;
 
 public class ChangeLetter {
 
+    public static final String VOWELS = "aEiIAeoOuU";
+
     public String  changeVowels(String input){
         if (input == null) {
             throw new IllegalArgumentException("Invalid input: null");
         }
-        String vowels = "aAeEiIoOuU";
         StringBuilder temp = new StringBuilder(input);
         for (int i=0; i<temp.length(); i++) {
-            if (vowels.indexOf(temp.charAt(i)) >= 0) {
+            if (VOWELS.indexOf(temp.charAt(i)) >= 0) {
                 temp.setCharAt(i, '*');
             }
         }
@@ -21,16 +22,15 @@ public class ChangeLetter {
         if (input == null) {
             throw new IllegalArgumentException("Invalid input: null");
         }
-        String vowels = "aAeEiIoOuU";
-        String output ="";
+        StringBuilder output = new StringBuilder();
         for (char c: input.toCharArray()) {
-            if (vowels.indexOf(c) >= 0) {
-                output = output + '*';
+            if (VOWELS.indexOf(c) >= 0) {
+                output.append("*");
             }
             else {
-                output = output + c;
+                output.append(c);
             }
         }
-    return output;
+    return output.toString();
     }
 }
