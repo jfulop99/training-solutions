@@ -6,9 +6,13 @@ public class UserValidator {
 
 
     public void validate(List<User> users) {
+        if (users == null) {
+            throw new IllegalArgumentException("Users is null");
+        }
         for (User user:users) {
-            if (user.getName().isBlank()){
-                throw new IllegalArgumentException("Username is empty");
+            String name = user.getName();
+            if (name == null || name.isBlank()){
+                throw new IllegalArgumentException("Username is empty or null");
             }
             int age = user.getAge();
             if (age < 0 || age > 120) {
