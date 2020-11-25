@@ -17,23 +17,30 @@ public class HeadQuarter {
 
     public void addTrooper(Trooper trooper) {
         if (trooper == null) {
-            throw new IllegalArgumentException("xxx");
+            throw new IllegalArgumentException("Trooper must not be null.");
         }
         troopers.add(trooper);
     }
 
     public void moveTrooperByName(String name, Position target) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name must not be empty or null.");
+        }
+        if (target == null) {
+            throw new IllegalArgumentException("Target must not be null.");
+        }
         moveTrooper(findTrooperByName(name), target);
     }
 
     public void moveClosestTrooper(Position target) {
+        if (target == null) {
+            throw new IllegalArgumentException("Target must not be null.");
+        }
+
         moveTrooper(findClosestTrooper(target), target);
     }
 
     private Trooper findTrooperByName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("xxx");
-        }
         for (Trooper trooper:troopers) {
             if (name.equals(trooper.getName())) {
                 return trooper;
@@ -43,9 +50,6 @@ public class HeadQuarter {
     }
 
     private void moveTrooper(Trooper trooper, Position target) {
-        if (trooper == null || target == null) {
-            throw new IllegalArgumentException("xxx");
-        }
         trooper.changePosition(target);
     }
 
