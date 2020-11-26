@@ -13,18 +13,7 @@ public class Product {
     }
 
     public double convertPrice(Currency currency) {
-        double changePrice = 0.0;
-        if (this.currency.equals(currency)) {
-            changePrice = price;
-        }
-//        else {
-//                if (this.currency == Currency.HUF) {
-//                    changePrice = Currency.USD.equals(currency.toString()) ? price * 300.0 : price / 300.0;
-//                }
-//                else {
-//                    changePrice = Currency.USD.equals(currency.toString()) ? price / 300.0 : price * 300.0;
-//                }
-//        }
+        double changePrice = price;
         if (this.currency == Currency.HUF && currency == Currency.USD) {
             changePrice = price / 300.0;
         }
