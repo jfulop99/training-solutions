@@ -56,4 +56,11 @@ public class BusTimeTableTest {
         });
         assertEquals("No more buses today!", ex.getMessage());
     }
+
+    @Test
+    public void testFirstBus() {
+        BusTimeTable timetable = new BusTimeTable(TIME_TABLE);
+
+        assertEquals("9:15", timetable.firstBus().toString());
+    }
 }
