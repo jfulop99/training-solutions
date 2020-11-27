@@ -10,12 +10,12 @@ public class Playlist {
 
     public Playlist(List<Song> playlist) {
         if (playlist == null) {
-            throw new IllegalStateException("Playlist is cannot be null.");
+            throw new IllegalArgumentException("Playlist is cannot be null.");
         }
         this.playlist = playlist;
     }
 
-    public List<Song> findByLengthGreaterThan(int min) {
+    public Playlist findByLengthGreaterThan(int min) {
         List<Song> songs = new ArrayList<>(Arrays.asList());
 
         for (Song song : playlist ) {
@@ -23,7 +23,7 @@ public class Playlist {
                 songs.add(song);
             }
         }
-        return songs;
+        return new Playlist(songs);
     }
 
     @Override

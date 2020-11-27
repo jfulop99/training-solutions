@@ -9,22 +9,22 @@ public class Song {
 
     public Song(String name, long lengthInSeconds, String artist) {
         if (isEmptyOrNull(name)) {
-            throw new IllegalStateException("Name is cannot be null or blank.");
+            throw new IllegalArgumentException("Name is cannot be null or blank.");
         }
         this.name = name;
         if (lengthInSeconds <= 0) {
-            throw new IllegalStateException(("Length must be bigger than 0."));
+            throw new IllegalArgumentException(("Length must be bigger than 0."));
         }
         this.lengthInSeconds = lengthInSeconds;
         if (isEmptyOrNull(artist)) {
-            throw new IllegalStateException("Artist is cannot be null or blank.");
+            throw new IllegalArgumentException("Artist is cannot be null or blank.");
         }
         this.artist = artist;
     }
 
     @Override
     public String toString() {
-        return String.format("Song: %-30s Length: %d:%d Artist: %-20s", name, (int)(lengthInSeconds / 60), (int)(lengthInSeconds % 60), artist);
+        return String.format("Song: %-30s Length: %2d:%02d Artist: %-20s", name, (int)(lengthInSeconds / 60), (int)(lengthInSeconds % 60), artist);
     }
 
     private boolean isEmptyOrNull(String string) {
