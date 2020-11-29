@@ -16,6 +16,22 @@ public class Mark {
         }
     }
 
+    public Mark(String markType, Subject subject, Tutor tutor) {
+        if (markType == null || subject == null || tutor == null || markType.isBlank()) {
+            throw new NullPointerException("Marktype, subject and tutor must be provided!");
+        }
+        else {
+            try {
+                this.markType = MarkType.valueOf(markType);
+            }catch (IllegalArgumentException e){
+                throw new IllegalArgumentException("Marktype must be A,B,C,D,F not " + markType + ".");
+            }
+            this.subject = subject;
+            this.tutor = tutor;
+        }
+    }
+
+
     @Override
     public String toString() {
         return String.format("%s(%d)", markType.getDescription(), markType.getValue());

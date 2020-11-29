@@ -27,4 +27,27 @@ public class MarkTest {
         assertEquals(TUTOR, mark.getTutor());
         assertEquals("excellent(5)", mark.toString());
     }
+    // Saját tesztek a második konstruktorhoz.
+    @Test
+    void testCreateWithString() {
+        Mark mark = new Mark("A", SUBJECT, TUTOR);
+        assertEquals(MarkType.A, mark.getMarkType());
+        assertEquals(SUBJECT, mark.getSubject());
+        assertEquals(TUTOR, mark.getTutor());
+        assertEquals("excellent(5)", mark.toString());
+    }
+
+    @Test
+    public void nullStringParameterShouldThrowException() throws NullPointerException {
+        Exception ex = assertThrows(NullPointerException.class, () -> new Mark((String)null, SUBJECT, TUTOR));
+        assertEquals("Marktype, subject and tutor must be provided!", ex.getMessage());
+    }
+
+    @Test
+    public void wrongStringParameterShouldThrowException() throws IllegalArgumentException {
+        String mark = "E";
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> new Mark(mark, SUBJECT, TUTOR));
+        assertEquals("Marktype must be A,B,C,D,F not "+ mark + ".", ex.getMessage());
+    }
+
 }
