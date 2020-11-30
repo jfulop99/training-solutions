@@ -1,8 +1,8 @@
 package week06d01;
 
 public class ResultSeparatedSum {
-    private double positiveSum;
-    private double negativeSum;
+    private final double positiveSum;
+    private final double negativeSum;
 
     public ResultSeparatedSum(double positiveSum, double negativeSum) {
         this.positiveSum = positiveSum;

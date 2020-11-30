@@ -10,7 +10,8 @@ class SeparatedSumTest {
     void sum() {
         SeparatedSum separatedSum = new SeparatedSum();
         ResultSeparatedSum result = separatedSum.sum("1,23;2,34;-1,23;-2,34;3;-3");
-        assertEquals("6.57 -6.57", result.getPositiveSum() + " " + result.getNegativeSum());
+        assertEquals(6.57, result.getPositiveSum(), 0.005);
+        assertEquals(-6.57, result.getNegativeSum(), 0.005);
     }
 
     @Test
