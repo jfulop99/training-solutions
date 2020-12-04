@@ -41,7 +41,7 @@ class ShoppingCartTest {
 
     @Test
     void addEmptyNameTest() {
-        Exception e = assertThrows(IllegalArgumentException.class, () -> shoppingCart.addItem("", 10));
+        Exception e = assertThrows(IllegalArgumentException.class, () -> shoppingCart.addItem("   ", 10));
         assertEquals("Name must be valid!", e.getMessage());
     }
 }

@@ -15,9 +15,9 @@ public class ShoppingCart {
         if (isBlankOrNull(name)) {
             throw new IllegalArgumentException("Name must be valid!");
         }
-        int index = findItem(name);
-            if (index >= 0) {
-                return items.get(index).getQuantity();
+        Item item = findItem(name);
+            if (item != null) {
+                return item.getQuantity();
             }
         return 0;
     }
@@ -26,23 +26,23 @@ public class ShoppingCart {
         if (isBlankOrNull(name)) {
             throw new IllegalArgumentException("Name must be valid!");
         }
-        int index = findItem(name);
-        if (index < 0) {
+        Item item = findItem(name);
+        if (item == null) {
             items.add(new Item(name,quantity));
         }
         else {
-            items.get(index).addQuantity(quantity);
+            item.addQuantity(quantity);
         }
 
     }
 
-    private int findItem(String name) {
-        for (int i = 0; i < items.size(); i++) {
-            if (name.equals(items.get(i).getName())) {
-                return i;
+    private Item findItem(String name) {
+        for (Item item:items) {
+            if (name.equals(item.getName())) {
+                return item;
             }
         }
-        return -1;
+        return null;
     }
 
     private boolean isBlankOrNull(String name) {
