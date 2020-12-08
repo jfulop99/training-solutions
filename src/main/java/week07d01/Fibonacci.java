@@ -36,8 +36,10 @@ public class Fibonacci {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i <= 300; i++) {
+        for (int i = 0; i <= 92; i++) {
             System.out.println(i + " - " + Fibonacci.fib(i) + " - " + Fibonacci.fib2(i));
+
         }
+        System.out.println(Long.MAX_VALUE);
     }
 }
