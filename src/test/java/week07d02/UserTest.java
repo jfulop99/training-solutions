@@ -13,4 +13,16 @@ class UserTest {
         assertEquals("John Doe", x.getFullName());
     }
 
+    @Test
+    void nullParameterTest() {
+        Exception e = assertThrows(IllegalArgumentException.class, () -> User.of(null, "John", "Doe") );
+        assertEquals("Invalid Username", e.getMessage());
+    }
+
+    @Test
+    void emptyParameterTest() {
+        Exception e = assertThrows(IllegalArgumentException.class, () -> User.of("User1", "     ", "Doe") );
+        assertEquals("Invalid Firstname", e.getMessage());
+    }
+
 }
