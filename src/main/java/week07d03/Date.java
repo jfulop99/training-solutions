@@ -8,7 +8,7 @@ public class Date {
 
 
     public Date(int year, int month, int day) {
-        if (year < 1900) {
+        if (year < 0) {
             throw new IllegalArgumentException("Invalid year");
         }
         this.year = year;
