@@ -1,35 +1,55 @@
 package exceptionclass.course;
 
-import java.text.DateFormat;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 public class SimpleTime {
 
-    private LocalTime time;
+    private int hour;
+    private int minute;
+
+
+    public int getHour() {
+        return hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public SimpleTime(int hour, int minute) {
+            setTime(hour, minute);
+    }
 
     public SimpleTime(String timeStr) {
         if (timeStr == null) {
-            throw new IllegalArgumentException("Time is null");
+            throw new InvalidTimeException("Time is null");
         }
         String[] timeArray = timeStr.split(":");
         if (timeArray.length != 2) {
-
+            throw new InvalidTimeException("Time is not hh:mm");
         }
         int hour;
-        int min;
-        int index = 0;
+        int minute;
         try {
-            hour = Integer.parseInt(timeArray[index++]);
-            min = Integer.parseInt(timeArray[index]);
+            hour = Integer.parseInt(timeArray[0]);
+            minute = Integer.parseInt(timeArray[1]);
         }catch (NumberFormatException e) {
-
-            throw new IllegalArgumentException("AA" + e.getMessage(), e.getCause());
+            throw new InvalidTimeException("Time is not hh:mm");
         }
-        this.time = LocalTime.of(hour, min);
+        setTime(hour, minute);
     }
 
-    public static void main(String[] args) {
-        SimpleTime simpleTime = new SimpleTime("rg:23");
+    private void setTime(int hour, int minute) {
+        if (hour < 0 || hour > 23) {
+            throw new InvalidTimeException("Hour is invalid (0-23)");
+        }
+        this.hour = hour;
+        if (minute < 0 || minute > 59) {
+            throw new InvalidTimeException("Minute is invalid (0-59)");
+        }
+        this.minute = minute;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%02d:%02d", hour, minute);
     }
 }
