@@ -1,9 +1,9 @@
-package week04;
+package week04d02;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+public class Search {
 
     public List<Integer> getIndexesOfChar1(String str, char c) {    // indexOf --> very difficult (20 minutes)
         List<Integer> result = new ArrayList<>();
@@ -56,17 +56,17 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Main main = new Main();
+        Search search = new Search();
 
             String [] strarray ={ "abrakadabra", "xxxxxxxxx", "aaaaaaaaa", ""};
             char c = 'a';
         for (String str : strarray ) {
 
-            System.out.println(main.getIndexesOfChar1(str, c));
+            System.out.println(search.getIndexesOfChar1(str, c));
 
-            System.out.println(main.getIndexesOfChar2(str, c));
+            System.out.println(search.getIndexesOfChar2(str, c));
 
-            System.out.println(main.getIndexesOfChar3(str, c));
+            System.out.println(search.getIndexesOfChar3(str, c));
         }
     }
 }

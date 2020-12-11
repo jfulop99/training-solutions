@@ -1,6 +1,4 @@
-package week02;
-
-import java.util.Scanner;
+package week02d02;
 
 public class Phone {
     private String type;

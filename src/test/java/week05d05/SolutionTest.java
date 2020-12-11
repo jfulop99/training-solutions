@@ -2,7 +2,6 @@ package week05d05;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import week04.Main;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

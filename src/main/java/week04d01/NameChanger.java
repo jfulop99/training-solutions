@@ -1,4 +1,4 @@
-package week04;
+package week04d01;
 
 public class NameChanger {
 
@@ -24,7 +24,7 @@ public class NameChanger {
     }
 }
 /*
-Készítsd el a week04.NameChanger osztályt, melynek privát attribútuma legyen a fullName:String,
+Készítsd el a week04d01.NameChanger osztályt, melynek privát attribútuma legyen a fullName:String,
 mely egy ember teljes nevét reprezentálja.
 A fullName attributum <vezetéknév><szóköz><keresztnév> formátumban épül fel (Mással most nem foglalkozunk).
 A Konstruktor állítsa be a paraméterül kapott értékre az adattagot,
