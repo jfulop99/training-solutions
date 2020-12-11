@@ -1,7 +1,5 @@
 package attributes.person;
 
-import week02.Phone;
-
 public class PersonMain {
     public static void main(String[] args) {
         Person person = new Person("John Doe", "123456XY");
