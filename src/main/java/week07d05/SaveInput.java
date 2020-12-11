@@ -4,12 +4,21 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class SaveInput {
 
+    private Scanner scanner;
 
-    public void writeFile() {
+    public SaveInput(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    public void printFile() {
 
         String[] lines = inputLines();
         File file = inputFileName();
@@ -24,28 +33,54 @@ public class SaveInput {
 
 
     private String[] inputLines(){
-        Scanner scanner = new Scanner(System.in);
+//        Scanner scanner = new Scanner(System.in);
         String [] lines = new String[3];
         for (int i = 0; i < lines.length; i++) {
             System.out.println(i + 1 + ". sor:");
             lines[i] = scanner.nextLine();
         }
-        scanner.close();
         return lines;
     }
 
     private File inputFileName() {
         File file;
-        Scanner scanner = new Scanner(System.in);
+//        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter filename:");
         file = new File(scanner.nextLine());
-        scanner.close();
         return file;
     }
 
-    public static void main(String[] args) {
-        SaveInput saveInput = new SaveInput();
 
+    public void writeFile() {
+        try {
+            Files.write(readFileName(), readLines());
+            } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private List<String> readLines() {
+        List<String> lines = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            System.out.println(i + 1 + ". sor:");
+            lines.add(scanner.nextLine());
+        }
+        return lines;
+    }
+
+    private Path readFileName() {
+        Path path;
+        System.out.println("Enter filename:");
+        path = Path.of(scanner.nextLine());
+        return path;
+
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        SaveInput saveInput = new SaveInput(scanner);
+
+        saveInput.printFile();
         saveInput.writeFile();
     }
 }
