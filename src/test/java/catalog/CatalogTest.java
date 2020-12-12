@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static catalog.SearchCriteria.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CatalogTest {
@@ -114,8 +115,7 @@ class CatalogTest {
     @Test
     public void testFindByCriteriaBoth() {
 
-        SearchCriteria searchCriteria = SearchCriteria.createByBoth("Night Visions", "Dan Raynolds");
-
+        SearchCriteria searchCriteria = createByBoth("Night Visions", "Dan Raynolds");
 
         catalog.addItem(catalogItem1);
         catalog.addItem(catalogItem2);
@@ -129,8 +129,7 @@ class CatalogTest {
     public void testFindByCriteriaContributor() {
 
 
-        SearchCriteria searchCriteria = SearchCriteria.createByContributor("Imagine Dragons");
-
+        SearchCriteria searchCriteria = createByContributor("Imagine Dragons");
 
         catalog.addItem(catalogItem1);
 
@@ -141,8 +140,7 @@ class CatalogTest {
     @Test
     public void testFindByCriteriaTitle() {
 
-        SearchCriteria searchCriteria = SearchCriteria.createByTitle("Harry Potter");
-
+        SearchCriteria searchCriteria = createByTitle("Harry Potter");
 
         catalog.addItem(catalogItem1);
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Catalog {
 
-    protected List<CatalogItem> catalogItems = new ArrayList<>();
+    List<CatalogItem> catalogItems = new ArrayList<>();
 
     public void addItem(CatalogItem item) {
         if (item == null) {
