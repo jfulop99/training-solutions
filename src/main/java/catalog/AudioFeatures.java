@@ -10,19 +10,24 @@ public class AudioFeatures implements Feature{
     private final List<String> composer;
     private final List<String> performers;
 
-    @SafeVarargs
-    public AudioFeatures(String title, int length, List<String> performers, List<String>... composer) {
-        checkParameters(title, length, performers, composer);
+    public AudioFeatures(String title, int length, List<String> performers, List<String> composer) {
+        checkParameters(title, length, performers,composer);
         this.title = title;
         this.length = length;
-        if (composer.length == 0) {
-            this.composer = null;
-        }
-        else {
-            this.composer = composer[0];
-        }
         this.performers = performers;
+        this.composer = composer;
     }
+
+
+
+    public AudioFeatures(String title, int length, List<String> performers) {
+        checkParameters(title, length, performers);
+        this.title = title;
+        this.length = length;
+        this.performers = performers;
+        this.composer = new ArrayList<>();
+    }
+
 
     @Override
     public List<String> getContributors() {
@@ -43,8 +48,7 @@ public class AudioFeatures implements Feature{
         return length;
     }
 
-    @SafeVarargs
-    private boolean checkParameters(String title, int length, List<String> performers, List<String>... composer) {
+    private void checkParameters(String title, int length, List<String> performers) {
 
         if (Validators.isBlank(title)) {
             throw new IllegalArgumentException("Title is blank");
@@ -53,13 +57,15 @@ public class AudioFeatures implements Feature{
             throw new IllegalArgumentException("Length is invalid");
         }
         if (Validators.isEmpty((List<Object>)(List<?>) performers)) {
+            throw new IllegalArgumentException("Performers is empty");
+        }
+    }
+
+    private void checkParameters(String title, int length, List<String> performers, List<String> composer) {
+
+        checkParameters(title, length, performers);
+        if (Validators.isEmpty((List<Object>)(List<?>) composer)) {
             throw new IllegalArgumentException("Composer is empty");
         }
-        if (composer.length != 0) {
-            if (Validators.isEmpty((List<Object>)(List<?>)composer[0])) {
-                throw new IllegalArgumentException("Performers is empty");
-            }
-        }
-        return true;
     }
 }
