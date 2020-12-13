@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CatalogItem implements Feature{
+public class CatalogItem {
 
     private final String registrationNumber;
     private final int price;
@@ -63,19 +63,12 @@ public class CatalogItem implements Feature{
         return false;
     }
 
-
-    @Override
     public List<String> getContributors() {
         List<String> contributors = new ArrayList<>();
         for (Feature item:features) {
             contributors.addAll(item.getContributors());
         }
         return contributors;
-    }
-
-    @Override
-    public String getTitle() {
-        return null;
     }
 
     public String getRegistrationNumber() {
