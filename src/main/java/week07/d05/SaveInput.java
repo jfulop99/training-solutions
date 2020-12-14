@@ -52,10 +52,20 @@ public class SaveInput {
 
 
     public void writeFile() {
+            List<String> lines = readLines();
+            Path path = readFileName();
         try {
-            Files.write(readFileName(), readLines());
-            } catch (IOException ioException) {
-            ioException.printStackTrace();
+            Files.write(path, lines);
+            } catch (IOException e) {
+            throw new IllegalStateException("Cannot write file", e);
+        }
+    }
+
+    public void writeFile(Path path, List<String> lines) {
+        try {
+            Files.write(path, lines);
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot write file", e);
         }
     }
 
@@ -80,7 +90,7 @@ public class SaveInput {
         Scanner scanner = new Scanner(System.in);
         SaveInput saveInput = new SaveInput(scanner);
 
-        saveInput.printFile();
+        //saveInput.printFile();
         saveInput.writeFile();
     }
 }
