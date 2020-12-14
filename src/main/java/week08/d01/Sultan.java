@@ -14,7 +14,7 @@ public class Sultan {
 
     public List<Integer> openDoors() {
 
-        calculate();
+        calculate2();
 
         List<Integer> opendoors = new ArrayList<>();
 
@@ -35,6 +35,16 @@ public class Sultan {
                 }
             }
         }
+    }
+    private void calculate2() {
+
+        for (int i = 0; i < NUMBER_OF_DAYS; i++) {
+            for (int j = i; j < NUMBER_OF_DOORS; j+=(i+1)) {
+                doors[j] = !doors[j];
+            }
+        }
+
+
     }
 
     public static void main(String[] args) {
