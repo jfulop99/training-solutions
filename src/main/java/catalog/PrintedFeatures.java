@@ -18,7 +18,7 @@ public class PrintedFeatures implements Feature{
             throw new IllegalArgumentException("Invalid number of pages!");
         }
         this.numberOfPages = numberOfPages;
-        if (Validators.isEmpty((List<Object>)(List<?>)authors)) {
+        if (Validators.isEmpty(authors)) {
             throw new IllegalArgumentException("List is empty!");
         }
         this.authors = authors;

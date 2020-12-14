@@ -32,7 +32,7 @@ public class AudioFeatures implements Feature{
     @Override
     public List<String> getContributors() {
         List<String> contributors = new ArrayList<>();
-        if (!Validators.isEmpty((List<Object>)(List<?>) composer)) {
+        if (!Validators.isEmpty(composer)) {
             contributors.addAll(composer);
         }
         contributors.addAll(performers);
@@ -56,7 +56,7 @@ public class AudioFeatures implements Feature{
         if (length < 0) {
             throw new IllegalArgumentException("Length is invalid");
         }
-        if (Validators.isEmpty((List<Object>)(List<?>) performers)) {
+        if (Validators.isEmpty( performers)) {
             throw new IllegalArgumentException("Performers is empty");
         }
     }
@@ -64,7 +64,7 @@ public class AudioFeatures implements Feature{
     private void checkParameters(String title, int length, List<String> performers, List<String> composer) {
 
         checkParameters(title, length, performers);
-        if (Validators.isEmpty((List<Object>)(List<?>) composer)) {
+        if (Validators.isEmpty(composer)) {
             throw new IllegalArgumentException("Composer is empty");
         }
     }
