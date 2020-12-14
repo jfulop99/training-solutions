@@ -43,8 +43,6 @@ public class Sultan {
                 doors[j] = !doors[j];
             }
         }
-
-
     }
 
     public static void main(String[] args) {
