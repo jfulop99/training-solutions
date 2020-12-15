@@ -2,7 +2,7 @@ package week08.d02;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,10 @@ public class CountyStatistic {
 
     public void readDataFile(String filename) {
         Path file = Path.of(filename);
-        try (BufferedReader reader = Files.newBufferedReader(file)) {
+
+
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader (CountyStatistic.class.getResourceAsStream("/" + filename)));) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(" ");
@@ -40,7 +43,7 @@ public class CountyStatistic {
     }
 
     public List<Country> getCountries() {
-        return List.copyOf(countries);
+        return new ArrayList<>(countries);
     }
 
     public static void main(String[] args) {
@@ -48,7 +51,10 @@ public class CountyStatistic {
         countyStatistic.readDataFile("countries.txt");
         System.out.println(countyStatistic.getCountries());
         System.out.println(countyStatistic.maxPopulaton());
-        //countyStatistic.getCountries().add(new Country("test",1,1,1));
+        System.out.println(countyStatistic.getCountries().size());
+        countyStatistic.getCountries().add(new Country("test",1,1,1));
+        System.out.println(countyStatistic.getCountries().size());
+
     }
 }
 
