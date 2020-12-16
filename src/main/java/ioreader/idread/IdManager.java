@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class IdManager {
 
@@ -29,16 +30,11 @@ public class IdManager {
     }
 
     private boolean checkId(String id) {
-        if (id.length() != 8) {
-            return false;
-        }
-        //return Pattern.matches("d{6}\\[A-Z]{2}", id);
-        return true;
+        return Pattern.matches("^[0-9]{6}[A-Z]{2}", id);
     }
 
     public List<String> getIds() {
         List<String> idsCopy = new ArrayList<>(ids);
-        //idsCopy.addAll(ids);
         return idsCopy;
     }
 }
