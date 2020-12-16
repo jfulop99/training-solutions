@@ -14,6 +14,8 @@ class StringListsTest {
         StringLists stringLists = new StringLists();
 
         assertEquals("[aa, bb, dd]", stringLists.shortestWords(Arrays.asList("aaa", null, "aa", "bb", "cccc", "dd")).toString());
+        assertEquals("[aa, bb, dd]", stringLists.shortestWords2(Arrays.asList("aaa", null, "aa", "bb", "cccc", "dd")).toString());
+        assertEquals("[aa, bb, dd]", stringLists.shortestWords3(Arrays.asList("aaa", null, "aa", "bb", "cccc", "dd")).toString());
     }
 
 }
