@@ -21,7 +21,7 @@ public class ExamplesStore {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Cannot read file", e);
         }
         return titlesOfExamples;
     }
