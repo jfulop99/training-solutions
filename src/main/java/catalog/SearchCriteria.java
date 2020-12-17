@@ -2,8 +2,8 @@ package catalog;
 
 public class SearchCriteria {
 
-    private final String contributor;
-    private final String title;
+    public String contributor;
+    public String title;
 
     private SearchCriteria(String contributor, String title) {
         this.contributor = contributor;
