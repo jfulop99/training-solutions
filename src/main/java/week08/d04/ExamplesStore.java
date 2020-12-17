@@ -21,7 +21,7 @@ public class ExamplesStore {
             }
 
         } catch (IOException e) {
-            throw new IllegalArgumentException("Cannot read file", e);
+            throw new IllegalStateException("Cannot read file", e);
         }
         return titlesOfExamples;
     }
