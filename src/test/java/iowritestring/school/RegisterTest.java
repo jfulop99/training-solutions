@@ -20,7 +20,8 @@ class RegisterTest {
 
     @Test
     public void newMarkTestIfNotExists() throws IOException {
-        Path file = Files.createFile(temporaryFolder.resolve("test.txt"));
+        //Path file = Files.createFile(temporaryFolder.resolve("test.txt"));
+        Path file = temporaryFolder.resolve("test.txt");
         register.newMark(file, 5);
         List<String> testList = Files.readAllLines(file);
 
@@ -30,7 +31,8 @@ class RegisterTest {
 
     @Test
     public void newMarkTestIfExists() throws IOException {
-        Path file = Files.createFile(temporaryFolder.resolve("test.txt"));
+        //Path file = Files.createFile(temporaryFolder.resolve("test.txt"));
+        Path file = temporaryFolder.resolve("test.txt");
         register.newMark(file, 4);
         register.newMark(file, 2);
 
