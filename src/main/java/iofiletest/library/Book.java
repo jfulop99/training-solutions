@@ -2,8 +2,8 @@ package iofiletest.library;
 
 public class Book {
 
-    private String author;
-    private String title;
+    private final String author;
+    private final String title;
 
     public Book(String author, String title) {
         this.author = author;

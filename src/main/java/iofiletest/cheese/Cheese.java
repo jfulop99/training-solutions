@@ -13,7 +13,7 @@ public class Cheese {
         }
         this.name = name;
         if (amountOfLactose < 0) {
-            throw new IllegalArgumentException("Invalid amount of lactose = " + Double.toString(amountOfLactose));
+            throw new IllegalArgumentException("Invalid amount of lactose = " + amountOfLactose);
         }
         this.amountOfLactose = amountOfLactose;
     }

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,7 +38,7 @@ public class Library {
         try (BufferedReader reader = new BufferedReader(Files.newBufferedReader(path, StandardCharsets.UTF_8))){
             String line;
             while ((line = reader.readLine()) != null) {
-                String parts[] = line.split(";");
+                String[] parts = line.split(";");
                 add(new Book(parts[0], parts[1]));
             }
 
