@@ -36,7 +36,10 @@ class CheeseManagerTest {
 
         Path path = temporaryFolder.resolve("test.dat");
         CheeseManager.saveToFile(path, cheeses);
-        assertEquals(4.23, CheeseManager.findCheese(path, "Ementáli").getAmountOfLactose());
+        Cheese cheese = CheeseManager.findCheese(path, "Ementáli");
+        assertNotNull(cheese);
+        assertEquals(4.23, cheese.getAmountOfLactose());
+        assertNull(CheeseManager.findCheese(path, "Kecske"));
     }
 
 }
