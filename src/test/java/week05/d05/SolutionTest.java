@@ -16,11 +16,11 @@ class SolutionTest {
     void mainTest() {
 
 
-//        String input = "3\n4\n";
-//        String expected = "12";
+        String input = "3\n4\n";
+        String expected = "12\r\n";
 
-        String input = "0\n4\n";
-        String expected = "java.lang.Exception: Breadth and height must be positive\r\n";
+//        String input = "0\n4\n";
+//        String expected = "java.lang.Exception: Breadth and height must be positive\r\n";
 
 
 
