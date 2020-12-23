@@ -31,20 +31,20 @@ public class FibCalculator {
     }
 
     public long sumEvens2(int bound) {
-            long result = 0;
-            long x = 1;
-            long y = 1;
-            long sum = 0;
-            do {
-                result = y;
-                long temp =  x + y;
-                y = x;
-                x = temp;
-                if (result % 2 == 0 && result < bound) {
-                    sum += result;
-                }
-            }while (result < bound);
-            return sum;
+        long result = 0;
+        long x = 1;
+        long y = 1;
+        long sum = 0;
+        while (result < bound) {
+            if (result % 2 == 0) {
+                sum += result;
+            }
+            result = y;
+            long temp =  x + y;
+            y = x;
+            x = temp;
+        }
+        return sum;
     }
 
 
