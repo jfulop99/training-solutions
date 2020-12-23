@@ -1,5 +1,7 @@
 package week09.d03;
 
+import java.util.Random;
+
 public class Person {
 
     private String name;
@@ -19,10 +21,10 @@ public class Person {
         this.age = age;
     }
 
-    public void setPresent() {
-        Present present = Present.randomPresent();
+    public void setPresent(Random rnd) {
+        Present present = Present.randomPresent(rnd);
         while (age > 14 && present == Present.TOY) {
-            present = Present.randomPresent();
+            present = Present.randomPresent(rnd);
         }
         this.present = present;
     }

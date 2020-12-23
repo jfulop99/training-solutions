@@ -11,11 +11,10 @@ public enum Present {
 
 
     private static final List<Present> PRESENTS = new ArrayList<>(Arrays.asList(values()));
-    private static final Random RND = new Random();
 
 
-    public static Present randomPresent() {
-        return PRESENTS.get(RND.nextInt(PRESENTS.size()));
+    public static Present randomPresent(Random rnd) {
+        return PRESENTS.get(rnd.nextInt(PRESENTS.size()));
     }
 
 }
