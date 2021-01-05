@@ -9,7 +9,7 @@ class TravelTest {
     @Test
     void getStopWithMax() {
 
-        assertEquals(39, new Travel().getStopWithMax(Travel.class.getResourceAsStream("utasadat.txt")));
+        assertEquals(8, new Travel().getStopWithMax(Travel.class.getResourceAsStream("utasadat.txt")));
 
     }
 }
