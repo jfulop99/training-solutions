@@ -22,4 +22,19 @@ public class LoadFileTest {
         assertEquals(134.2, track.getTrackPoints().get(0).getElevation(), 0.05);
 
     }
+
+    @Test
+    void testLoadGpxXmlParser() throws IOException {
+        Track track = new Track();
+        try (InputStream is = LoadFileTest.class.getResourceAsStream("/track.gpx")) {
+            track.loadFromGpxXmlParser(is);
+        }
+
+        assertEquals(2801, track.getTrackPoints().size());
+        assertEquals(18.541194, track.getTrackPoints().get(0).getCoordinate().getLongitude(), 0.000005);
+        assertEquals(47.218102, track.getTrackPoints().get(0).getCoordinate().getLatitude(), 0.000005);
+        assertEquals(134.2, track.getTrackPoints().get(0).getElevation(), 0.05);
+
+    }
+
 }

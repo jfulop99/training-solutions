@@ -1,15 +1,13 @@
 package activity;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,19 +163,32 @@ public class Track {
         } catch (IOException e) {
             throw new IllegalStateException("Cannot read file", e);
         }
-
-        for (int i = 0; i < document.getElementsByTagName(TAGNAME_TRKPT).getLength(); i++) {
-            String lat = document.getElementsByTagName(TAGNAME_TRKPT).item(i).getAttributes().getNamedItem("lat").getTextContent();
-            String lon = document.getElementsByTagName(TAGNAME_TRKPT).item(i).getAttributes().getNamedItem("lon").getTextContent();
-            String ele = document.getElementsByTagName("ele").item(i).getTextContent();
-
+        int length = document.getElementsByTagName(TAGNAME_TRKPT).getLength();
+        NodeList nodeList = document.getElementsByTagName(TAGNAME_TRKPT);
+        for (int i = 0; i < length; i++) {
+            String lat = nodeList.item(i).getAttributes().getNamedItem("lat").getTextContent();
+            String lon = nodeList.item(i).getAttributes().getNamedItem("lon").getTextContent();
+            String ele = null;
+            String time = null;
+            NodeList childNodes = nodeList.item(i).getChildNodes();
+            for (int j = 0; j < childNodes.getLength(); j++) {
+                if (childNodes.item(j).getNodeName().equals("ele")) {
+                    ele = childNodes.item(j).getFirstChild().getNodeValue();
+                }
+                if (childNodes.item(j).getNodeName().equals("time")) {
+                    time = childNodes.item(j).getFirstChild().getNodeValue();
+                }
+            }
+//            System.out.println(String.format("%s %s %s %s", lat, lon, ele, time));
             trackPoints.add(new TrackPoint(new Coordinate(Double.parseDouble(lat), Double.parseDouble(lon)), Double.parseDouble(ele)));
         }
-        
     }
 
     public static void main(String[] args) {
         Track track = new Track();
-        track.loadFromGpx(Track.class.getResourceAsStream("/track.gpx"));
+        track.loadFromGpxXmlParser(Track.class.getResourceAsStream("/track.gpx"));
+        for (TrackPoint point: track.getTrackPoints()) {
+            System.out.println(String.format("%-9s %-9s %-5s", point.getCoordinate().getLatitude(), point.getCoordinate().getLongitude(), point.getElevation()));
+        }
     }
 }
