@@ -23,6 +23,10 @@ public class TrackPoint {
 
     public double getDistanceFrom(TrackPoint point) {
 
+        if (point == null) {
+            throw new IllegalArgumentException("Trackpoint is null");
+        }
+
         double lat1 = coordinate.getLatitude();
         double lat2 = point.getCoordinate().getLatitude();
         double lon1 = coordinate.getLongitude();

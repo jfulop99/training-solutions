@@ -7,7 +7,7 @@ public class Report {
 
     public Report(ActivityType activityType, double distance) {
         if (activityType == null) {
-            throw new IllegalStateException("Activity type is null");
+            throw new IllegalArgumentException("Activity type is null");
         }
         this.activityType = activityType;
         if (distance < 0) {

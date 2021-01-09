@@ -10,6 +10,9 @@ public class ActivityWithTrack implements Activity{
             throw new IllegalArgumentException("Track is null");
         }
         this.track = track;
+        if (activityType == null) {
+            throw new IllegalArgumentException("Activity type is null");
+        }
         this.activityType = activityType;
     }
 
@@ -22,4 +25,5 @@ public class ActivityWithTrack implements Activity{
     public ActivityType getType() {
         return activityType;
     }
+
 }

@@ -170,20 +170,20 @@ public class Track {
         for (int i = 0; i < length; i++) {
             String lat = nodeList.item(i).getAttributes().getNamedItem("lat").getTextContent();
             String lon = nodeList.item(i).getAttributes().getNamedItem("lon").getTextContent();
-            String ele = null;
-            String time = null;
             NodeList childNodes = nodeList.item(i).getChildNodes();
-            for (int j = 0; j < childNodes.getLength(); j++) {
-                if (childNodes.item(j).getNodeName().equals("ele")) {
-                    ele = childNodes.item(j).getFirstChild().getNodeValue();
-                }
-                if (childNodes.item(j).getNodeName().equals("time")) {
-                    time = childNodes.item(j).getFirstChild().getNodeValue();
-                }
-            }
-//            System.out.println(String.format("%s %s %s %s", lat, lon, ele, time));
-            trackPoints.add(new TrackPoint(new Coordinate(Double.parseDouble(lat), Double.parseDouble(lon)), Double.parseDouble(ele)));
+            double ele = parseChild(childNodes);
+            trackPoints.add(new TrackPoint(new Coordinate(Double.parseDouble(lat), Double.parseDouble(lon)), ele));
         }
+    }
+
+    private double parseChild(NodeList childNodes) {
+        double ele = 0.0;
+        for (int j = 0; j < childNodes.getLength(); j++) {
+            if (childNodes.item(j).getNodeName().equals("ele")) {
+                ele = Double.parseDouble(childNodes.item(j).getFirstChild().getNodeValue());
+            }
+        }
+        return ele;
     }
 
     public static void main(String[] args) {
