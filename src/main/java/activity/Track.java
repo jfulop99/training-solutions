@@ -163,8 +163,10 @@ public class Track {
         } catch (IOException e) {
             throw new IllegalStateException("Cannot read file", e);
         }
-        int length = document.getElementsByTagName(TAGNAME_TRKPT).getLength();
+
         NodeList nodeList = document.getElementsByTagName(TAGNAME_TRKPT);
+        int length = nodeList.getLength();
+
         for (int i = 0; i < length; i++) {
             String lat = nodeList.item(i).getAttributes().getNamedItem("lat").getTextContent();
             String lon = nodeList.item(i).getAttributes().getNamedItem("lon").getTextContent();
