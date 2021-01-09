@@ -34,6 +34,9 @@ public class Cv {
     }
 
     public int findSkillLevelByName(String skillName) {
+        if (skillName == null || skillName.isBlank()) {
+            throw new IllegalArgumentException("Cannot be null or blank");
+        }
         for (Skill skill:skills) {
             if (skill.getName().equals(skillName)) {
                 return skill.getLevel();
