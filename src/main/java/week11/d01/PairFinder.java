@@ -36,8 +36,8 @@ public class PairFinder {
         return numberOfPairs;
     }
 
+//    Órai megoldás
     public int findPairs2(int[] arr) {
-        // Órai megoldás
         int numberOfPairs = 0;
 
         List<Integer> arrayItems = new ArrayList<>();
