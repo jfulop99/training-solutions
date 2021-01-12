@@ -190,7 +190,7 @@ public class Track {
         Track track = new Track();
         track.loadFromGpxXmlParser(Track.class.getResourceAsStream("/track.gpx"));
         for (TrackPoint point: track.getTrackPoints()) {
-            System.out.println(String.format("%-9s %-9s %-5s", point.getCoordinate().getLatitude(), point.getCoordinate().getLongitude(), point.getElevation()));
+            System.out.printf("%-9s %-9s %-5s%n", point.getCoordinate().getLatitude(), point.getCoordinate().getLongitude(), point.getElevation());
         }
     }
 }
