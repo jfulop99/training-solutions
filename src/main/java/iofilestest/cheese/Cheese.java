@@ -1,4 +1,4 @@
-package iofiletest.cheese;
+package iofilestest.cheese;
 
 import catalog.Validators;
 

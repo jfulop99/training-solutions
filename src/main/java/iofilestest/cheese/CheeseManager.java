@@ -1,4 +1,4 @@
-package iofiletest.cheese;
+package iofilestest.cheese;
 
 import java.io.*;
 import java.nio.file.Files;

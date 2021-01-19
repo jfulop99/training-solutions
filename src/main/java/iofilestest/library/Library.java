@@ -1,4 +1,4 @@
-package iofiletest.library;
+package iofilestest.library;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

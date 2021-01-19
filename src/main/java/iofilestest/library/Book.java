@@ -1,4 +1,4 @@
-package iofiletest.library;
+package iofilestest.library;
 
 public class Book {
 
