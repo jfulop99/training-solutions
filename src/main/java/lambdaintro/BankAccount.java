@@ -1,6 +1,6 @@
 package lambdaintro;
 
-public class BankAccount {
+public class BankAccount implements Comparable<BankAccount>{
 
     private String accountNumber;
 
@@ -27,11 +27,7 @@ public class BankAccount {
     }
 
     @Override
-    public String toString() {
-        return "BankAccount{" +
-                "accountNumber='" + accountNumber + '\'' +
-                ", NameOfOwner='" + NameOfOwner + '\'' +
-                ", balance=" + balance +
-                '}';
+    public int compareTo(BankAccount o) {
+        return accountNumber.compareTo(o.getAccountNumber());
     }
 }
