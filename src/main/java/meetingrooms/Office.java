@@ -1,4 +1,4 @@
-package week02project;
+package meetingrooms;
 
 import java.util.ArrayList;
 import java.util.List;
