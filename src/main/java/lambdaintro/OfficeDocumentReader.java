@@ -10,15 +10,14 @@ public class OfficeDocumentReader {
 
     public List<File> listOfficeDocuments(File path) {
 
-        List<File> officeFiles = new ArrayList<>();
+        List<File> fileList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(path.listFiles((file) -> file.isFile() && file.getName().toUpperCase().matches("^.*\\.(DOCX|XLSX|PPTX)$")))));
 
-        officeFiles.addAll(Arrays.asList(Objects.requireNonNull(path.listFiles((file) -> file.isFile() && file.getName().toUpperCase().matches("^.*\\.(DOCX|XLSX|PPTX)$")))));
+//      List<File> fileList = new ArrayList<>(Arrays.asList(path.listFiles((file) -> file.isFile() && file.getName().toUpperCase().matches("^.*\\.(DOCX|XLSX|PPTX)$"))));
 
-//        officeFiles.addAll(Arrays.asList(path.listFiles((file) -> file.isFile() && file.getName().toUpperCase().matches("^.*\\.(DOCX|XLSX|PPTX)$"))));
+        fileList.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
 
-        officeFiles.forEach((a) -> System.out.println(a.getName()));
 
-        return officeFiles;
+        return fileList;
     }
 
 }
