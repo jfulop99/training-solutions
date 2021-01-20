@@ -1,6 +1,4 @@
-package initalizer;
-
-import java.math.BigDecimal;
+package initializer;
 
 public class Rate {
 
