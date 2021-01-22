@@ -3,6 +3,7 @@ package lambdaintro;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,10 +36,10 @@ class SocialNetworkTest {
                 new Member("Janet Doe", Arrays.asList("JavaScript", "scripting"), Sex.MALE)
         ));
 
-//        List<Member> found = socialNetwork.findMembersBy(m -> m.getSkills().contains("Java"));
-//        assertEquals(2, found.size());
-//        assertEquals("John Doe", found.get(0).getName());
-//        assertEquals("James Doe", found.get(1).getName());
+        List<Member> found = socialNetwork.findMembersBy(m -> m.getSkills().contains("Java"));
+        assertEquals(2, found.size());
+        assertEquals("John Doe", found.get(0).getName());
+        assertEquals("James Doe", found.get(1).getName());
     }
 
     @Test
@@ -51,13 +52,13 @@ class SocialNetworkTest {
                 new Member("Jenifer Doe", Arrays.asList("C", "C++", "ASM"), Sex.FEMALE)
         ));
 
-//        socialNetwork.applyToSelectedMembers(
-//                m -> m.getGender() == Sex.FEMALE && m.getSkills().contains("db"),
-//                m -> m.sendMessage("Dear " + m.getName() + "!"));
-//
-//        assertEquals("Dear Jane Doe!", socialNetwork.findMembersBy(m -> m.getName().equals("Jane Doe")).get(0).getMessages().get(0));
-//        assertEquals("Dear Janet Doe!", socialNetwork.findMembersBy(m -> m.getName().equals("Janet Doe")).get(0).getMessages().get(0));
-//        assertEquals(0, socialNetwork.findMembersBy(m -> m.getName().equals("Jenifer Doe")).get(0).getMessages().size());
+        socialNetwork.applyToSelectedMembers(
+                m -> m.getGender() == Sex.FEMALE && m.getSkills().contains("db"),
+                m -> m.sendMessage("Dear " + m.getName() + "!"));
+
+        assertEquals("Dear Jane Doe!", socialNetwork.findMembersBy(m -> m.getName().equals("Jane Doe")).get(0).getMessages().get(0));
+        assertEquals("Dear Janet Doe!", socialNetwork.findMembersBy(m -> m.getName().equals("Janet Doe")).get(0).getMessages().get(0));
+        assertEquals(0, socialNetwork.findMembersBy(m -> m.getName().equals("Jenifer Doe")).get(0).getMessages().size());
     }
 
     @Test
@@ -66,10 +67,16 @@ class SocialNetworkTest {
                 new Member("John Doe", Arrays.asList("Java", "OOP"), Sex.MALE),
                 new Member("Jane Doe", Arrays.asList(".NET", "OOP", "db"), Sex.FEMALE),
                 new Member("James Doe", Arrays.asList("Python", "Java", "OOP"), Sex.MALE)));
-//        List<String> names = socialNetwork.transformMembers(Member::getName);
-//        assertEquals(3, names.size());
-//        assertEquals("John Doe", names.get(0));
-//        assertEquals("James Doe", names.get(2));
+        List<String> names = socialNetwork.transformMembers(Member::getName);
+        assertEquals(3, names.size());
+        assertEquals("John Doe", names.get(0));
+        assertEquals("James Doe", names.get(2));
+
+        List<Sex> sexes = socialNetwork.transformMembers(Member::getGender);
+        assertEquals(3, sexes.size());
+        assertEquals(Sex.MALE, sexes.get(0));
+        assertEquals(Sex.FEMALE, sexes.get(1));
+
     }
 
 }
