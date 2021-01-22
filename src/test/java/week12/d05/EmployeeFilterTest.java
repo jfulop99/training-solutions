@@ -17,8 +17,9 @@ class EmployeeFilterTest {
                 new Employee(34, 4, "John Doe", new ArrayList<>(Arrays.asList("programming", "running", "swimming"))),
                 new Employee(35, 4, "Jane Doe", new ArrayList<>(Arrays.asList("running", "swimming"))),
                 new Employee(36, 4, "Jack Doe", new ArrayList<>(Arrays.asList("running", "swimming"))),
-                new Employee(37, 5, "Bob Doe", new ArrayList<>(Arrays.asList("programming", "running", "swimming"))),
-                new Employee(38, 2, "Jim Doe", new ArrayList<>(Arrays.asList("programming", "running", "swimming")))
+                new Employee(37, 5, "Bob Doe", new ArrayList<>(Arrays.asList(null,"programming", "running", "swimming"))),
+                new Employee(38, 2, "Jim Doe", new ArrayList<>(Arrays.asList("programming", "running", "swimming"))),
+                new Employee(39, 7, "Null Doe", null)
         ));
 
         EmployeeFilter employeeFilter = new EmployeeFilter();
@@ -38,8 +39,9 @@ class EmployeeFilterTest {
                 new Employee(34, 4, "John Doe", new ArrayList<>(Arrays.asList("programming", "running", "swimming"))),
                 new Employee(35, 4, "Jane Doe", new ArrayList<>(Arrays.asList("running", "swimming"))),
                 new Employee(36, 4, "Jack Doe", new ArrayList<>(Arrays.asList("running", "swimming"))),
-                new Employee(37, 5, "Bob Doe", new ArrayList<>(Arrays.asList("programming", "running", "swimming"))),
-                new Employee(38, 2, "Jim Doe", new ArrayList<>(Arrays.asList("programming", "running", "swimming")))
+                new Employee(37, 5, "Bob Doe", new ArrayList<>(Arrays.asList(null,"programming", "running", "swimming"))),
+                new Employee(38, 2, "Jim Doe", new ArrayList<>(Arrays.asList("programming", "running", "swimming"))),
+                new Employee(39, 7, "Null Doe", null)
         ));
 
         EmployeeFilter employeeFilter = new EmployeeFilter();
