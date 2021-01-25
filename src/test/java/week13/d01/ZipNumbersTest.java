@@ -12,7 +12,7 @@ class ZipNumbersTest {
 
         ZipNumbers zipNumbers = new ZipNumbers();
 
-        assertEquals( "Aba", zipNumbers.getFirstCityByName().get().getName());
+        assertEquals( "Aba", zipNumbers.getFirstCityByName().getName());
 
     }
 }

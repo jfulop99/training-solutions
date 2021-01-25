@@ -3,10 +3,10 @@ package week13.d01;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.text.Collator;
+import java.text.ParseException;
+import java.text.RuleBasedCollator;
+import java.util.*;
 
 public class ZipNumbers {
 
@@ -39,17 +39,44 @@ public class ZipNumbers {
 
     }
 
-    public Optional<ZipNumber> getFirstCityByName() {
+    public ZipNumber getFirstCityByName() {
 
         List<ZipNumber> sorted = new ArrayList<>(zipNumberList);
 
-        return sorted.stream().min(Comparator.comparing(ZipNumber::getName).thenComparing(ZipNumber::getDistrict));
+
+
+        ZipNumber result;
+
+//        result = sorted.stream().min(Comparator.comparing(ZipNumber::getName).thenComparing(ZipNumber::getDistrict)).get();
+
+        Collator collator = Collator.getInstance(new Locale("hu", "HU"));
+
+        RuleBasedCollator ruleBasedCollator = null;
+
+        try {
+             ruleBasedCollator = new RuleBasedCollator("< a,A < á,Á < b,B < c,C < cs,Cs,CS < d,D < dz,Dz,DZ < dzs,Dzs,DZS \n" +
+                    " < e,E < é,É < f,F < g,G < gy,Gy,GY < h,H < i,I < í,Í < j,J\n" +
+                    " < k,K < l,L < ly,Ly,LY < m,M < n,N < ny,Ny,NY < o,O < ó,Ó \n" +
+                    " < ö,Ö < ő,Ő < p,P < q,Q < r,R < s,S < sz,Sz,SZ < t,T \n" +
+                    " < ty,Ty,TY < u,U < ú,Ú < ü,Ü < ű,Ű < v,V < w,W < x,X < y,Y < z,Z < zs,Zs,ZS");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        collator.setStrength(Collator.IDENTICAL);
+
+        Collections.sort(sorted, Comparator.comparing(ZipNumber::getName, Comparator.nullsLast(ruleBasedCollator)).thenComparing(ZipNumber::getDistrict, Comparator.nullsFirst(collator)));
+
+        sorted.forEach(System.out::println);
+
+        result = sorted.get(0);
+
+        return result;
 
     }
     public static void main(String[] args) {
         ZipNumbers zipNumbers = new ZipNumbers();
 
-        System.out.println(zipNumbers.getFirstCityByName().get().getName());
+        System.out.println(zipNumbers.getFirstCityByName().getName());
 
 
     }

@@ -24,4 +24,8 @@ public class ZipNumber {
         return zipNumber;
     }
 
+    @Override
+    public String toString() {
+        return name + ", " + (district == null ? "": district + ", ") + zipNumber;
+    }
 }
