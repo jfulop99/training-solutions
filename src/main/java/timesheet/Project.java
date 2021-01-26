@@ -15,6 +15,8 @@ public class Project {
         return name;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -22,7 +24,7 @@ public class Project {
 
         Project project = (Project) o;
 
-        return name != null ? name.equals(project.name) : project.name == null;
+        return name.equals(project.name);
     }
 
     @Override

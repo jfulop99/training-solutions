@@ -35,14 +35,18 @@ public class Company {
 
     private void readDataFile(InputStream file, DataType dataType) {
         try ( BufferedReader reader = new BufferedReader (new InputStreamReader(file, StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                parseLine(line, dataType);
-            }
+            readLines(dataType, reader);
         } catch (NullPointerException npe) {
             throw new IllegalStateException("Cannot find file", npe);
         } catch (IOException ioe) {
             throw new IllegalStateException("Cannot read file", ioe);
+        }
+    }
+
+    private void readLines(DataType dataType, BufferedReader reader) throws IOException {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            parseLine(line, dataType);
         }
     }
 
