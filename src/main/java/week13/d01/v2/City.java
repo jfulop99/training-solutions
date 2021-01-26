@@ -45,6 +45,6 @@ public class City {
 
     @Override
     public String toString() {
-        return name + ", " + (districtName == null ? "": districtName + ", ") + zipNumber;
+        return zipNumber + " " + name + (districtName == null ? "": ", " + districtName );
     }
 }
