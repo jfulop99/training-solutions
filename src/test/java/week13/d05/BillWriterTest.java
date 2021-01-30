@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -110,7 +112,7 @@ class BillWriterTest {
 
         System.out.println(test3);
 
-        assertEquals(test3, billWriter.writeBillsFunction(billItems, billItem -> {
+        Function<Optional<BillItem>, String> formatterFunction = billItem -> {
             String result = "Megnevezés          Egységár (Ft) Darab Összeg\n";
             if (billItem.isPresent()) {
                 String name = billItem.get().getName();
@@ -119,7 +121,10 @@ class BillWriterTest {
                 result = String.format("%-20s%13d%5d%6d\n", name, unitPrice, number, unitPrice * number);
             }
             return result;
-        }));
+
+        };
+
+        assertEquals(test3, billWriter.writeBillsFunction(billItems, formatterFunction));
 
     }
 
