@@ -6,28 +6,23 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Map;
 
 public class TemplateEngine {
 
-    void merge(BufferedReader reader, Map<String, Object> data, BufferedWriter writer) {
+    public static final String OPEN_SIGN = "{";
+    public static final String CLOSE_SIGN = "}";
 
-        try (reader; writer){
+    void merge(BufferedReader reader, Map<String, Object> data, BufferedWriter writer) throws IOException {
+
             String line;
             while ((line = reader.readLine()) != null) {
-
-
-
-                writer.write((lineProcessor(line, data)) + "\n");
-
+                writer.write((lineProcessorWithMoreKeys(line, data)) + "\n");
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
 
     }
 
@@ -52,21 +47,52 @@ public class TemplateEngine {
         return outLine;
     }
 
+    private String lineProcessorWithMoreKeys(String line, Map<String, Object> data) {
+
+        int indexOfOpen= 0;
+        int indexOfClose= 0;
+        String result = line;
+
+        while ((indexOfOpen = result.indexOf(OPEN_SIGN, indexOfClose)) > 0 ) {
+            indexOfClose = result.indexOf(CLOSE_SIGN, indexOfOpen);
+            String key = result.substring(indexOfOpen + 1, indexOfClose);
+
+            String value = getStringValue(data.get(key));
+
+            result = result.replace(OPEN_SIGN + key + CLOSE_SIGN, value);
+        }
+        return result;
+    }
+
+    private String getStringValue(Object keyValue) {
+        String value = "";
+        if (keyValue instanceof LocalDate) {
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy. MMMM dd.");
+            value = ((LocalDate) keyValue).format(format);
+        }
+        else if (keyValue instanceof Double) {
+            NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("hu", "HU"));
+            value = format.format(keyValue);
+        }
+        else {
+            value = keyValue.toString();
+        }
+        return value;
+    }
+
 
     public static void main(String[] args) {
 
         TemplateEngine templateEngine = new TemplateEngine();
 
-        Map<String, Object> data = new HashMap<>();
-
-        data.put("nev", "John Doe");
-        data.put("datum", LocalDate.now());
-        data.put("osszeg", 12324.50);
-        data.put("hatarido", LocalDate.of(2021, 02,01));
+        Map<String, Object> data = Map.of("nev", "John Doe",
+                "datum", LocalDate.now(),
+                "osszeg", 12324.50,
+                "hatarido", LocalDate.now().plusDays(30));
 
 
-        try {
-            templateEngine.merge(new BufferedReader(new InputStreamReader(TemplateEngine.class.getResourceAsStream("template.txt"))),data, Files.newBufferedWriter(Path.of("output.txt")));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(TemplateEngine.class.getResourceAsStream("template.txt"))); BufferedWriter writer = Files.newBufferedWriter(Path.of("output.txt"))){
+            templateEngine.merge(reader,data, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
