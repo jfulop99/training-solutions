@@ -1,16 +1,22 @@
 package week14.d01;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class Transformers {
 
     public <T, R> List<R> map(List<T> list, Function<T, R> transformer) {
 
-        return list.stream().map(transformer).collect(Collectors.toList());
+        List<R> result = new ArrayList<>();
+        for ( T item: list) {
+            result.add(transformer.apply(item));
+        }
+        return result;
+
+//        return list.stream().map(transformer).collect(Collectors.toList());
 
     }
 
@@ -22,12 +28,16 @@ public class Transformers {
         }
         return result;
 
+//        return list.stream().reduce(identity, combiner::apply);
+
     }
 
 
     public static void main(String[] args) {
 
         System.out.println(new Transformers().map(Arrays.asList(1, 2, 3), (value) -> value + 1)); // [2, 3, 4]
+
+        System.out.println(new Transformers().map(Arrays.asList("egy", "kettő", "három"), String::length)); // [3, 5, 5]
 
         System.out.println(new Transformers().reduce(Arrays.asList(1, 2, 3), 0, Integer::sum)); // 6
     }
