@@ -6,8 +6,8 @@ import java.util.List;
 
 public class CoffeeOrder {
 
-    private List<Coffee> coffeeList;
-    private LocalDateTime dateTime;
+    private final List<Coffee> coffeeList;
+    private final LocalDateTime dateTime;
 
     public CoffeeOrder(List<Coffee> coffeeList, LocalDateTime dateTime) {
         this.coffeeList = coffeeList;

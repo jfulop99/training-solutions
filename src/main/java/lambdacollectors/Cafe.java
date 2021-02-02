@@ -22,7 +22,7 @@ public class Cafe {
 
     public double getAverageOrder() {
 
-        double average = orderList.stream().map(a -> a.getCoffeeList()).collect(summarizingInt(a -> a.size())).getAverage();
+        double average = orderList.stream().map(CoffeeOrder::getCoffeeList).collect(summarizingInt(List::size)).getAverage();
 
         average = Math.round(average * 10000) / 10000D;
 
