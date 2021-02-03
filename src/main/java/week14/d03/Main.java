@@ -14,6 +14,17 @@ public class Main {
                 new User("Marton", 16, "Racz Aladar utca 99/b"),
                 new User("Attila", 19, "Kazmer utca 4")
         ))));
+
+        final UserFilter filter2 = new UserFilters().createFilter2(Arrays.asList(
+                (user) -> user.getAge() > 18,
+                (user) -> user.getName().startsWith("A")
+        ));
+        System.out.println(filter2.filter(new ArrayList<>(Arrays.asList(
+                new User("Marton", 16, "Racz Aladar utca 99/b"),
+                new User("Attila", 19, "Kazmer utca 4")
+        ))));
+
+
     }
 
 }
