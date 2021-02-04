@@ -14,14 +14,23 @@ public class EmployeeCopy {
         this.employees = employees;
     }
 
+    public List<Employee> employeeTransform() {
+        return employees.stream()
+                .map(Employee::toUpperCase)
+                .collect(Collectors.toList());
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
 
     public static void main(String[] args) {
-        EmployeeCopy employeeCopy = new EmployeeCopy(new ArrayList<>(Arrays.asList(new Employee("John"), new Employee("Jack"))));
+        EmployeeCopy employeeCopy = new EmployeeCopy(new ArrayList<>(Arrays.asList(new Employee("John"), new Employee("Jack"), new Employee("Jane"))));
 
+        System.out.println(employeeCopy.getEmployees());
 
-        List<Employee> newList = employeeCopy.employees.stream().map(employee -> new Employee(employee.getName().toUpperCase())).collect(Collectors.toList());
+        System.out.println(employeeCopy.employeeTransform());
 
-        System.out.println(newList);
-
+        System.out.println(employeeCopy.getEmployees());
     }
 }

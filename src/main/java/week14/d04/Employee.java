@@ -2,7 +2,7 @@ package week14.d04;
 
 public class Employee {
 
-    private String name;
+    private final String name;
 
     public Employee(String name) {
         this.name = name;
@@ -10,6 +10,10 @@ public class Employee {
 
     public String getName() {
         return name;
+    }
+
+    public Employee toUpperCase() {
+        return new Employee(name.toUpperCase());
     }
 
     @Override
