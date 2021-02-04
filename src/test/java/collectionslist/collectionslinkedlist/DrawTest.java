@@ -27,7 +27,7 @@ class DrawTest {
         Set<Integer> drawnNumbers = new Draw().drawNumbers(drawCount, maxNumber);
 
         //Then
-        // assertThat(drawnNumbers.size(), equalTo(drawCount));
+        assertEquals(drawnNumbers.size(), drawCount);
         for (int drawnNumber : drawnNumbers) {
             assertTrue(drawnNumber > 0);
             assertTrue(drawnNumber <= maxNumber);
