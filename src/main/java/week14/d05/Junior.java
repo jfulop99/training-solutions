@@ -25,12 +25,16 @@ public class Junior {
     public void lineProcessor(BufferedReader reader, String[] words) throws IOException {
         String line = "";
         while ((line = reader.readLine()) != null) {
-            for (String word : words) {
-                if (line.contains(word)) {
-                    int count = 1;
-                    count = inLineWordCounter(line, word); // Ha kell soron belül számolni
-                    result.merge(word, count, Integer::sum);
-                }
+            lineFilter(words, line);
+        }
+    }
+
+    private void lineFilter(String[] words, String line) {
+        for (String word : words) {
+            if (line.contains(word)) {
+                int count = 1;
+                count = inLineWordCounter(line, word); // Ha kell soron belül számolni
+                result.merge(word, count, Integer::sum);
             }
         }
     }
