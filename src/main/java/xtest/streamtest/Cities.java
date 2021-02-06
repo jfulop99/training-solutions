@@ -3,10 +3,15 @@ package xtest.streamtest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.RuleBasedCollator;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Cities {
 
@@ -20,12 +25,38 @@ public class Cities {
 
     private final List<City> cityList;
 
+    private List<City> cityListStream;
+
+    Map<String, List<City>> cityMap;
+
     public Cities(BufferedReader reader) throws IOException, ParseException {
 
         cityList = new ArrayList<>();
 
         readDataFromFile(reader);
 
+        System.out.println();
+
+    }
+
+    private static String getHungarianFirstLetter(City city) {
+        String firstLetter = city.getName().substring(0, 1);
+        if ("cCzZ".contains(firstLetter)) {
+            if ("sS".contains(city.getName().substring(1, 2))) {
+                return city.getName().substring(0, 2);
+            }
+        }
+        if ("sS".contains(firstLetter)) {
+            if ("zZ".contains(city.getName().substring(1, 2))) {
+                return city.getName().substring(0, 2);
+            }
+        }
+        if ("gGlLnNtT".contains(firstLetter)) {
+            if ("yY".contains(city.getName().substring(1, 2))) {
+                return city.getName().substring(0, 2);
+            }
+        }
+        return firstLetter;
     }
 
     private void readDataFromFile(BufferedReader reader) throws IOException {
@@ -54,6 +85,29 @@ public class Cities {
     }
 
 
+    public void readFile(Path path) {
+        try (Stream<String> lines = Files.lines(path, Charset.forName("UTF8"))) {
+            cityMap = lines
+                    .skip(1)
+                    .map(City::generateFromCsv)
+                    .collect(Collectors.groupingBy(Cities::getHungarianFirstLetter));
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot read file", e);
+        }
+    }
+
+    public void printCitiesByAlphabetOrder() {
+
+        List<String> keys = new ArrayList<>(cityMap.keySet());
+        keys.sort(hunRuleBasedCollator);
+        for (String key : keys) {
+//            List<City> cities = cityMap.get(key);
+//            cities.sort(Comparator.naturalOrder());
+            System.out.println(key + " " + cityMap.get(key).stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList()));
+        }
+    }
+
+
     public long getNumberOfCities() {
 
         return cityList.stream()
@@ -75,11 +129,17 @@ public class Cities {
 
         for (City city : cityList) {
 
-            result.computeIfAbsent(city.getName().substring(0, 1), b -> new TreeSet<>()).add(city);
+            result.merge(city.getName().substring(0, 1), new TreeSet<>(List.of(city)), Cities::addNextCity);
+            //result.computeIfAbsent(city.getName(), b -> new TreeSet<>()).add(city);
 
 
         }
         return result;
+    }
+
+    private static TreeSet<City> addNextCity(TreeSet<City> cities, TreeSet<City> cities2) {
+        cities.addAll(cities2);
+        return cities;
     }
 
 
@@ -105,6 +165,14 @@ public class Cities {
             System.out.println(e.get(key).stream().map(City::getName).collect(Collectors.joining(" ")));
         }
         System.out.println(cities.citiesByAToZ());
+
+        try {
+            cities.readFile(Path.of(cities.getClass().getResource("/iranyitoszamok-varosok-2021.csv").toURI()));
+        } catch (URISyntaxException uriSyntaxException) {
+            uriSyntaxException.printStackTrace();
+        }
+
+        cities.printCitiesByAlphabetOrder();
 
     }
 
