@@ -23,7 +23,7 @@ public class Cities {
 
     private final RuleBasedCollator hunRuleBasedCollator = new RuleBasedCollator(HUNGARIAN_COLLATOR_RULE);
 
-    private final List<City> cityList;
+    private List<City> cityList;
 
     private List<City> cityListStream;
 
@@ -85,12 +85,31 @@ public class Cities {
     }
 
 
+    public void mapByFirstLetter() {
+        cityMap = cityList
+                .stream()
+                .collect(Collectors.groupingBy(Cities::getHungarianFirstLetter));
+    }
+
+    public Map<Integer, List<City>> mapByLength() {
+
+        Map<Integer, List<City>> result = cityList
+                .stream()
+                .collect(Collectors.groupingBy(city -> city.getName().length()));
+        List<Integer> keys = new ArrayList<>(result.keySet());
+        keys.sort(Comparator.naturalOrder());
+        for (Integer key : keys) {
+            System.out.println(key + " " + result.get(key).stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList()));
+        }
+        return result;
+    }
+
     public void readFile(Path path) {
         try (Stream<String> lines = Files.lines(path, Charset.forName("UTF8"))) {
-            cityMap = lines
+            cityList = lines
                     .skip(1)
                     .map(City::generateFromCsv)
-                    .collect(Collectors.groupingBy(Cities::getHungarianFirstLetter));
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             throw new IllegalStateException("Cannot read file", e);
         }
@@ -98,11 +117,10 @@ public class Cities {
 
     public void printCitiesByAlphabetOrder() {
 
+        mapByFirstLetter();
         List<String> keys = new ArrayList<>(cityMap.keySet());
         keys.sort(hunRuleBasedCollator);
         for (String key : keys) {
-//            List<City> cities = cityMap.get(key);
-//            cities.sort(Comparator.naturalOrder());
             System.out.println(key + " " + cityMap.get(key).stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList()));
         }
     }
@@ -173,6 +191,8 @@ public class Cities {
         }
 
         cities.printCitiesByAlphabetOrder();
+
+        cities.mapByLength();
 
     }
 
