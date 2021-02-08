@@ -76,7 +76,8 @@ public class City implements Comparable<City> {
 
     @Override
     public String toString() {
-        return zipNumber + " " + name + (districtName == null ? "" : ", " + districtName);
+        //return zipNumber + " " + name + (districtName == null ? "" : ", " + districtName);
+        return name;
     }
 
 

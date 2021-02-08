@@ -98,8 +98,10 @@ public class Cities {
                 .collect(Collectors.groupingBy(city -> city.getName().length()));
         List<Integer> keys = new ArrayList<>(result.keySet());
         keys.sort(Comparator.naturalOrder());
+        int i = 1;
         for (Integer key : keys) {
-            System.out.println(key + " " + result.get(key).stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList()));
+            int length = 76 + i++ * 2;
+            System.out.println(String.format("%2d %3d %3$" + length + "s", key, result.get(key).size(), result.get(key).stream().sorted(Comparator.naturalOrder()).limit(4).collect(Collectors.toList())));
         }
         return result;
     }
