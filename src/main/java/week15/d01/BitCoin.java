@@ -57,7 +57,6 @@ public class BitCoin {
     public Optional<Result> calculateWithStream(List<Integer> rates) {
 
         int sizeOfInput = rates.size();
-        Object o = new Object();
 
         return IntStream.range(0, sizeOfInput - 1)
                 .boxed()
