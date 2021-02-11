@@ -12,8 +12,8 @@ public class Library {
     }
 
     public void loadFromFile(){
-        try (Scanner scanner = new Scanner(Library.class.getResourceAsStream("/books.csv")).useDelimiter(";|(\r\n)")){
-            while (scanner.hasNext()){
+        try (Scanner scanner = new Scanner(Library.class.getResourceAsStream("/books1.csv")).useDelimiter(";|(\r\n)")) {
+            while (scanner.hasNext()) {
                 books.add(new Book(scanner.next(), scanner.next(), scanner.next(), Integer.parseInt(scanner.next())));
             }
         }
