@@ -1,8 +1,16 @@
 package xtest;
 
-public class B extends A{
+public class B extends A {
 
-    public int getThree(){
+    public B(int a) {
+        super(a);
+    }
+
+    public B() {
+        super();
+    }
+
+    public int getThree() {
         return 3;
     }
 
