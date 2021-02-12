@@ -68,12 +68,14 @@ public class CovidStat {
                 if (!parts[7].isBlank()) {
                     String country = parts[4];
                     int number = Integer.parseInt(parts[2]);
+                    int numberOfDeaths = Integer.parseInt(parts[3]);
                     int population = Integer.parseInt(parts[7]);
 
                     if (!cases.containsKey(country)) {
-                        cases.put(country, new Country(country, number, population));
+                        cases.put(country, new Country(country, number, population, numberOfDeaths));
                     } else {
                         cases.get(country).addCases(number);
+                        cases.get(country).addDeath(numberOfDeaths);
                     }
                 }
             }
@@ -82,7 +84,22 @@ public class CovidStat {
         }
 
         result = new ArrayList<>(cases.values());
+
+        result.sort(Comparator.comparingDouble(Country::getDeathRate).reversed());
+        for (int i = 0; i < result.size(); i++) {
+            if (result.get(i).getName().equals("Hungary")) {
+                System.out.println(i + 1 + " " + result.get(i).getName() + " Deaths/Population");
+                break;
+            }
+        }
+
         result.sort(Comparator.comparingDouble(Country::getRate).reversed());
+        for (int i = 0; i < result.size(); i++) {
+            if (result.get(i).getName().equals("Hungary")) {
+                System.out.println(i + 1 + " " + result.get(i).getName() + " Cases/Population");
+                break;
+            }
+        }
 
         return result.subList(0, 3);
 
@@ -101,7 +118,6 @@ public class CovidStat {
     }
 
     public List<Country> maxCasesPerPopulationStream(Path path) {
-        List<Country> result;
         Map<String, Country> cases = new HashMap<>();
 
         try (Stream<String> lines = Files.lines(path)) {
