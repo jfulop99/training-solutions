@@ -20,7 +20,7 @@ public class GameOfThrones {
                     .skip(1)
                     .flatMap(s -> {
                         String[] parts = s.split(",");
-                        return Stream.of(parts[5], parts[9]);
+                        return Stream.of(parts).skip(5).limit(8);
                     })
                     .filter(a -> !a.isBlank())
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
