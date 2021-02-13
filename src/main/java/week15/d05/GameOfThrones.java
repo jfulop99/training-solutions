@@ -14,7 +14,8 @@ import java.util.stream.Stream;
 public class GameOfThrones {
 
     private static Stream<String> getHousesFromLine(String s) {
-        String[] parts = s.split(",");
+//        String[] parts = s.split(",");
+        String[] parts = CsvSplitter.split(s);
         return Stream.of(parts).skip(5).limit(8);
     }
 
