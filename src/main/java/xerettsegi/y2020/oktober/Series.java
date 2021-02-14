@@ -119,7 +119,7 @@ public class Series {
         for (Episode episode : episodeList) {
             result.computeIfAbsent(episode.getTitle(), e -> new ArrayList<>()).add(episode);
         }
-        try (BufferedWriter writer = Files.newBufferedWriter(Path.of("summa.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Path.of("temp/summa.txt"))) {
             for (String key : result.keySet()) {
                 List<Episode> episodes = result.get(key);
                 int numberOfEpisodes = episodes.size();

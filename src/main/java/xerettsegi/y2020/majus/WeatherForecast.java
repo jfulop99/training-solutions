@@ -111,16 +111,20 @@ public class WeatherForecast {
 
         System.out.println("6. feladat");
         for (String city : weatherData.keySet()) {
-            try (BufferedWriter writer = Files.newBufferedWriter(Path.of(city + ".txt"))) {
-                writer.write(city + "\n");
-                for (Weather item : weatherData.get(city)) {
-                    writer.write(item.getTimeOfMeasure().toString() + " " + "#".repeat(item.getWindSpeed()) + "\n");
-                }
+            try (BufferedWriter writer = Files.newBufferedWriter(Path.of("temp/" + city + ".txt"))) {
+                cityWriter(city, writer);
             } catch (IOException e) {
                 throw new IllegalStateException("Cannot write file", e);
             }
         }
         System.out.println("A fájlok elkészültek.");
+    }
+
+    private void cityWriter(String city, BufferedWriter writer) throws IOException {
+        writer.write(city + "\n");
+        for (Weather item : weatherData.get(city)) {
+            writer.write(item.getTimeOfMeasure().toString() + " " + "#".repeat(item.getWindSpeed()) + "\n");
+        }
     }
 
     public static void main(String[] args) {
