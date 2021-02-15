@@ -42,8 +42,13 @@ public class CanoeOffice {
 
     public double getRentalPriceByName(String name, LocalDateTime endTime) {
         CanoeRental actual = findRentalByName(name);
-
-        return Duration.between(actual.getStartTime(), endTime).toHours() * actual.getCanoeType().getMultiplier() * 5000D;
+        Duration duration = Duration.between(actual.getStartTime(), endTime);
+        int minutes = duration.toMinutesPart();
+        int hours = duration.toHoursPart();
+        if (minutes > 0) {
+            hours++;
+        }
+        return hours * actual.getCanoeType().getMultiplier() * 5000D;
     }
 
     public List<CanoeRental> listClosedRentals() {
@@ -57,6 +62,28 @@ public class CanoeOffice {
 
         return rentalList.stream()
                 .collect(Collectors.groupingBy(CanoeRental::getCanoeType, Collectors.counting()));
+    }
+
+    public static void main(String[] args) {
+        CanoeOffice canoeOffice = new CanoeOffice();
+
+        canoeOffice.addRental(new CanoeRental("Kovács Pista", CanoeType.RED, LocalDateTime.of(2021, 02, 15, 10, 5)));
+        canoeOffice.addRental(new CanoeRental("Kovács Béla", CanoeType.RED, LocalDateTime.of(2021, 02, 15, 10, 10)));
+        canoeOffice.addRental(new CanoeRental("Kovács Géza", CanoeType.BLUE, LocalDateTime.of(2021, 02, 15, 10, 20)));
+        canoeOffice.addRental(new CanoeRental("Kovács Gyula", CanoeType.GREEN, LocalDateTime.of(2021, 02, 15, 10, 30)));
+
+        System.out.println(canoeOffice.findRentalByName("Kovács Gyula"));
+
+        System.out.println(canoeOffice.listClosedRentals());
+
+        canoeOffice.closeRentalByName("Kovács Béla", LocalDateTime.of(2021, 02, 15, 12, 0));
+
+        System.out.println(canoeOffice.listClosedRentals());
+
+        System.out.println(canoeOffice.countRentals());
+
+        System.out.println(canoeOffice.getRentalPriceByName("Kovács Géza", LocalDateTime.of(2021, 2, 15, 11, 30)));
+
     }
 
 }

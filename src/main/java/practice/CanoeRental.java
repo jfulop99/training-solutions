@@ -41,4 +41,14 @@ public class CanoeRental {
     public LocalDateTime getEndTime() {
         return endTime;
     }
+
+    @Override
+    public String toString() {
+        return "CanoeRental{" +
+                "name='" + name + '\'' +
+                ", canoeType=" + canoeType +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
+    }
 }

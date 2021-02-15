@@ -2,12 +2,12 @@ package practice;
 
 public enum CanoeType {
 
-    RED(1), GREEN(1.2), BLUE(1.5);
+    RED(1D), GREEN(1.2D), BLUE(1.5D);
 
     private double multiplier;
 
     CanoeType(double multiplier) {
-
+        this.multiplier = multiplier;
     }
 
 
