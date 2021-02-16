@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class CanoeOffice {
 
-    private List<CanoeRental> rentalList;
+    private final List<CanoeRental> rentalList;
 
     public CanoeOffice() {
 
@@ -67,16 +67,16 @@ public class CanoeOffice {
     public static void main(String[] args) {
         CanoeOffice canoeOffice = new CanoeOffice();
 
-        canoeOffice.addRental(new CanoeRental("Kovács Pista", CanoeType.RED, LocalDateTime.of(2021, 02, 15, 10, 5)));
-        canoeOffice.addRental(new CanoeRental("Kovács Béla", CanoeType.RED, LocalDateTime.of(2021, 02, 15, 10, 10)));
-        canoeOffice.addRental(new CanoeRental("Kovács Géza", CanoeType.BLUE, LocalDateTime.of(2021, 02, 15, 10, 20)));
-        canoeOffice.addRental(new CanoeRental("Kovács Gyula", CanoeType.GREEN, LocalDateTime.of(2021, 02, 15, 10, 30)));
+        canoeOffice.addRental(new CanoeRental("Kovács Pista", CanoeType.RED, LocalDateTime.of(2021, 2, 15, 10, 5)));
+        canoeOffice.addRental(new CanoeRental("Kovács Béla", CanoeType.RED, LocalDateTime.of(2021, 2, 15, 10, 10)));
+        canoeOffice.addRental(new CanoeRental("Kovács Géza", CanoeType.BLUE, LocalDateTime.of(2021, 2, 15, 10, 20)));
+        canoeOffice.addRental(new CanoeRental("Kovács Gyula", CanoeType.GREEN, LocalDateTime.of(2021, 2, 15, 10, 30)));
 
         System.out.println(canoeOffice.findRentalByName("Kovács Gyula"));
 
         System.out.println(canoeOffice.listClosedRentals());
 
-        canoeOffice.closeRentalByName("Kovács Béla", LocalDateTime.of(2021, 02, 15, 12, 0));
+        canoeOffice.closeRentalByName("Kovács Béla", LocalDateTime.of(2021, 2, 15, 12, 0));
 
         System.out.println(canoeOffice.listClosedRentals());
 
