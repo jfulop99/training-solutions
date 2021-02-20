@@ -6,19 +6,19 @@ public class Country {
 
     private int cases;
 
-    private int population;
+    private long population;
 
     private int death;
 
     private String continent;
 
-    public Country(String name, int cases, int population, int death, String continent) {
+    public Country(String name, int cases, long population, int death, String continent) {
         this(name, cases, population);
         this.death = death;
         this.continent = continent;
     }
 
-    public Country(String name, int cases, int population) {
+    public Country(String name, int cases, long population) {
         this.name = name;
         this.cases = cases;
         this.population = population;
@@ -40,7 +40,7 @@ public class Country {
         return cases;
     }
 
-    public int getPopulation() {
+    public long getPopulation() {
         return population;
     }
 

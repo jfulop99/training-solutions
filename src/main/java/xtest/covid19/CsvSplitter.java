@@ -5,12 +5,15 @@ import java.util.List;
 
 public class CsvSplitter {
 
+    public static final String DEFAULT_STRING_SEPARATOR = "\"";
+    public static final String DEFAULT_FIELD_SEPARATOR = ",";
+
     public static String[] split(String line) {
-        return split(line, ",", "\"");
+        return split(line, DEFAULT_FIELD_SEPARATOR, DEFAULT_STRING_SEPARATOR);
     }
 
     public static String[] split(String line, String dataSeparator) {
-        return split(line, dataSeparator, "\"");
+        return split(line, dataSeparator, DEFAULT_STRING_SEPARATOR);
     }
 
     public static String[] split(String line, String dataSeparators, String stringSeparators) {
@@ -20,11 +23,11 @@ public class CsvSplitter {
         }
 
         if (dataSeparators == null || dataSeparators.isEmpty()) {
-            dataSeparators = ",";
+            dataSeparators = DEFAULT_FIELD_SEPARATOR;
         }
 
         if (stringSeparators == null || stringSeparators.isEmpty()) {
-            stringSeparators = "\"";
+            stringSeparators = DEFAULT_STRING_SEPARATOR;
         }
 
         StringBuilder sb = new StringBuilder();

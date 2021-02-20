@@ -22,51 +22,52 @@ public class CovidStat {
 
         reader.readLine();
 
+
         String line;
         while ((line = reader.readLine()) != null) {
-//                line = line.replace("Bonaire,", "Bonaire");
-//                String[] parts = line.split(",");
             String[] parts = CsvSplitter.split(line, ",");
             if (!parts[9].isBlank()) {
-                String country = parts[6];
-                int number = Integer.parseInt(parts[4]);
-                int numberOfDeaths = Integer.parseInt(parts[5]);
-                int population = Integer.parseInt(parts[9]);
-                String continent = parts[10];
+                String country = parts[0];
+                int number = Integer.parseInt(parts[5]);
+                String indicator = parts[4];
+                long population = Long.parseLong(parts[3]);
+                String continent = parts[2];
 
                 if (!cases.containsKey(country)) {
-                    cases.put(country, new Country(country, number, population, numberOfDeaths, continent));
-                } else {
+                    cases.put(country, new Country(country, 0, population, 0, continent));
+                }
+                if ("cases".equals(indicator)) {
                     cases.get(country).addCases(number);
-                    cases.get(country).addDeath(numberOfDeaths);
+                } else if ("deaths".equals(indicator)) {
+                    cases.get(country).addDeath(number);
                 }
             }
         }
 
         result = cases.values().stream()
-                .filter(cont -> cont.getContinent().equals("Europe"))
+//                .filter(cont -> cont.getContinent().equals("Europe"))
                 .sorted(Comparator.comparingDouble(Country::getDeathRate).reversed()).collect(Collectors.toList());
-        System.out.println("Deaths/Population");
+        System.out.println("Halálozás / Népesség");
         for (int i = 0; i < result.size(); i++) {
             if (i < 15) {
-                System.out.println(i + 1 + "\t" + result.get(i).getName());
+                System.out.printf("%2d %7.4f%% %-30s\n", i + 1, result.get(i).getDeathRate() * 100, result.get(i).getName());
             }
-            if (result.get(i).getName().equals("Hungary")) {
-                System.out.println(i + 1 + "\t" + result.get(i).getName());
+            if (result.get(i).getName().equals("Hungary") && i > 14) {
+                System.out.printf("%2d %7.4f%% %-30s\n", i + 1, result.get(i).getDeathRate() * 100, result.get(i).getName());
                 break;
             }
         }
 
         result = cases.values().stream()
-                .filter(cont -> cont.getContinent().equals("Europe"))
+//                .filter(cont -> cont.getContinent().equals("Europe"))
                 .sorted(Comparator.comparingDouble(Country::getRate).reversed()).collect(Collectors.toList());
-        System.out.println("Cases/Population");
+        System.out.println("Esetszám / Népesség");
         for (int i = 0; i < result.size(); i++) {
             if (i < 15) {
-                System.out.println(i + 1 + " " + result.get(i).getName());
+                System.out.printf("%2d %7.4f%% %-30s\n", i + 1, result.get(i).getRate() * 100, result.get(i).getName());
             }
-            if (result.get(i).getName().equals("Hungary")) {
-                System.out.println(i + 1 + " " + result.get(i).getName());
+            if (result.get(i).getName().equals("Hungary") && i > 14) {
+                System.out.printf("%2d %7.4f%% %-30s\n", i + 1, result.get(i).getRate() * 100, result.get(i).getName());
                 break;
             }
         }
@@ -78,7 +79,7 @@ public class CovidStat {
     public static void main(String[] args) throws IOException {
 
         CovidStat covidStatistic = new CovidStat();
-        URL url = new URL("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv/data.csv");
+        URL url = new URL("https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/csv/data.csv");
         URLConnection connection = url.openConnection();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
@@ -90,6 +91,4 @@ public class CovidStat {
         }
 
     }
-
-
 }
