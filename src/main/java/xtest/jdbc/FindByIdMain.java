@@ -21,7 +21,7 @@ public class FindByIdMain {
         }
     }
 
-    private void selectNameByPreparedStatement(PreparedStatement ps) throws SQLException {
+    private void selectNameByPreparedStatement(PreparedStatement ps) {
         try (ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 String name = rs.getString("emp_name");
