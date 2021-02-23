@@ -3,6 +3,7 @@ package activitytracker;
 import org.flywaydb.core.Flyway;
 import org.mariadb.jdbc.MariaDbDataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,29 +11,15 @@ import java.util.List;
 
 public class ActivityTrackerMain {
 
-    private static final String JDBC_URL = "jdbc:mariadb://localhost:3306/activitytracker?useUnicode=true";
-    private static final String JDBC_USER = "activitytracker";
-    private static final String JDBC_PASSWORD = "activitytracker";
 
-    private MariaDbDataSource dataSource;
+    private DataSource dataSource;
 
-    public ActivityTrackerMain() {
-        dataSource = getMariaDbDataSource();
+    public ActivityTrackerMain(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    private MariaDbDataSource getMariaDbDataSource() {
-        MariaDbDataSource dataSource = new MariaDbDataSource();
-        try {
-            dataSource.setUrl(JDBC_URL);
-            dataSource.setUser(JDBC_USER);
-            dataSource.setPassword(JDBC_PASSWORD);
-        } catch (SQLException sqlException) {
-            throw new IllegalStateException("Can not create datasource", sqlException);
-        }
-        return dataSource;
-    }
 
-    public void insertActivity(MariaDbDataSource dataSource, Activity activity) {
+    public void insertActivity(Activity activity) {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement stmt =
@@ -90,13 +77,19 @@ public class ActivityTrackerMain {
     }
 
 
-    public MariaDbDataSource getDataSource() {
-        return dataSource;
-    }
-
     public static void main(String[] args) {
 
-        ActivityTrackerMain activityDao = new ActivityTrackerMain();
+        MariaDbDataSource dataSource = new MariaDbDataSource();
+
+        try {
+            dataSource.setUrl("jdbc:mariadb://localhost:3306/activitytracker?useUnicode=true");
+            dataSource.setUser("activitytracker");
+            dataSource.setPassword("activitytracker");
+        } catch (SQLException sqlException) {
+            throw new IllegalStateException("Can not create datasource", sqlException);
+        }
+
+        ActivityTrackerMain activityDao = new ActivityTrackerMain(dataSource);
 
         List<Activity> activities = new ArrayList<>();
         activities.add(new Activity(1, LocalDateTime.of(2021, 1, 11, 10, 12), "Leírás 1", ActivityType.BIKING));
@@ -106,13 +99,13 @@ public class ActivityTrackerMain {
         activities.add(new Activity(5, LocalDateTime.of(2021, 1, 15, 10, 52), "Leírás 5", ActivityType.BIKING));
 
 
-        Flyway flyway = Flyway.configure().locations("/db/migration/activitytracker").dataSource(activityDao.getDataSource()).load();
+        Flyway flyway = Flyway.configure().locations("/db/migration/activitytracker").dataSource(dataSource).load();
 
         flyway.clean();
         flyway.migrate();
 
         for (Activity item : activities) {
-            activityDao.insertActivity(activityDao.getDataSource(), item);
+            activityDao.insertActivity(item);
         }
 
         System.out.println(activityDao.getActivityById(3));
