@@ -1,4 +1,4 @@
-package activitytracker;
+package xtest.jdbc;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

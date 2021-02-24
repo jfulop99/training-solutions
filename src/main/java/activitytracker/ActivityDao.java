@@ -78,7 +78,7 @@ public class ActivityDao {
     }
 
     private long getGeneratedKey(PreparedStatement stmt) {
-        try (ResultSet rs = stmt.getGeneratedKeys();) {
+        try (ResultSet rs = stmt.getGeneratedKeys()) {
             if (rs.next()) {
                 return rs.getLong(1);
             } else {
@@ -175,5 +175,59 @@ public class ActivityDao {
         }
     }
 
+    public Activity insertActivity(Activity activity) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "insert into activities(start_time, activity_desc,activity_type) values(?,?,?)",
+                     Statement.RETURN_GENERATED_KEYS
+             )) {
+            stmt.setTimestamp(1, Timestamp.valueOf(activity.getStartTime()));
+            stmt.setString(2, activity.getDesc());
+            stmt.setString(3, activity.getType().toString());
+            stmt.executeUpdate();
+            long id = executeAndGetGeneratedKey(stmt);
+            return new Activity(
+                    id, activity.getStartTime(), activity.getDesc(), activity.getType()
+            );
+        } catch (SQLException sqlException) {
+            throw new IllegalArgumentException("Cannot insert", sqlException);
+        }
+    }
 
+    private long executeAndGetGeneratedKey(PreparedStatement stmt) {
+        try (
+                ResultSet rs = stmt.getGeneratedKeys()
+        ) {
+            if (rs.next()) {
+                return rs.getLong(1);
+            } else {
+                throw new SQLException("No key was generated.");
+            }
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Insertion failed.", e);
+        }
+    }
+
+    public List<Activity> insertActivities(List<Activity> activities) {
+        List<Activity> result = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "insert into activities(start_time, activity_desc,activity_type) values(?,?,?)",
+                     Statement.RETURN_GENERATED_KEYS
+             )) {
+            for (Activity activity : activities) {
+
+                stmt.setTimestamp(1, Timestamp.valueOf(activity.getStartTime()));
+                stmt.setString(2, activity.getDesc());
+                stmt.setString(3, activity.getType().toString());
+                stmt.executeUpdate();
+                long id = executeAndGetGeneratedKey(stmt);
+                result.add(new Activity(
+                        id, activity.getStartTime(), activity.getDesc(), activity.getType()));
+            }
+            return result;
+        } catch (SQLException sqlException) {
+            throw new IllegalArgumentException("Cannot insert", sqlException);
+        }
+    }
 }

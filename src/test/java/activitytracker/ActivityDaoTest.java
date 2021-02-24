@@ -120,4 +120,30 @@ class ActivityDaoTest {
 
 
     }
+
+    @Test
+    void testInsertActivity() {
+        Activity result = activityDao.insertActivity(new Activity(LocalDateTime.of(2021, 1, 11, 10, 12), "Leírás 1", ActivityType.BIKING, trackPoints));
+
+        assertEquals(1, result.getId());
+
+    }
+
+    @Test
+    void testInsertActivities() {
+        List<Activity> query = new ArrayList<>();
+        query.add(new Activity(LocalDateTime.of(2021, 1, 11, 10, 12), "Leírás 1", ActivityType.BIKING, trackPoints));
+        query.add(new Activity(LocalDateTime.of(2021, 1, 12, 10, 22), "Leírás 2", ActivityType.BASKETBALL, trackPoints));
+        query.add(new Activity(LocalDateTime.of(2021, 1, 13, 10, 32), "Leírás 3", ActivityType.HIKING, trackPoints));
+        query.add(new Activity(LocalDateTime.of(2021, 1, 14, 10, 42), "Leírás 4", ActivityType.RUNNING, trackPoints));
+        query.add(new Activity(LocalDateTime.of(2021, 1, 15, 10, 52), "Leírás 5", ActivityType.BIKING, trackPoints));
+
+        List<Activity> result = activityDao.insertActivities(query);
+
+        assertEquals(5, result.size());
+        assertEquals(5, result.get(4).getId());
+
+    }
+
+
 }

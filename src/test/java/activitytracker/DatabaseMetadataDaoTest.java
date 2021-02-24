@@ -10,22 +10,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MetaDataDaoTest {
+class DatabaseMetadataDaoTest {
 
-    private MetaDataDao metaDataDao;
-
-    @Test
-    void getTableNames() {
-
-        List<String> names = metaDataDao.getTableNames();
-        System.out.println(names);
-
-        assertTrue(names.contains("activities"), "Contains activities table");
-
-    }
+    private DatabaseMetadataDao metaDataDao;
 
     @BeforeEach
     void setUp() {
+
         MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
             dataSource.setUrl("jdbc:mariadb://localhost:3306/activitytracker?useUnicode=true");
@@ -42,6 +33,27 @@ class MetaDataDaoTest {
         flyway.clean();
         flyway.migrate();
 
-        metaDataDao = new MetaDataDao(dataSource);
+        metaDataDao = new DatabaseMetadataDao(dataSource);
+
+    }
+
+    @Test
+    void getColumnsForTable() {
+
+        List<String> names = metaDataDao.getColumnsForTable("activities");
+        System.out.println(names);
+
+        assertTrue(names.contains("activity_desc"), "Contains activity_desc column");
+
+    }
+
+    @Test
+    void getTableNames() {
+
+        List<String> names = metaDataDao.getTableNames();
+        System.out.println(names);
+
+        assertTrue(names.contains("activities"), "Contains activities table");
+
     }
 }
