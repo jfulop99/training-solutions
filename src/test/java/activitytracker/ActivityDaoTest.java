@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mariadb.jdbc.MariaDbDataSource;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +23,7 @@ class ActivityDaoTest {
     List<TrackPoint> trackPoints;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
 
         MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
@@ -41,14 +44,15 @@ class ActivityDaoTest {
         flyway.clean();
         flyway.migrate();
 
-        trackPoints = new ArrayList<>();
-        trackPoints.add(new TrackPoint(LocalDateTime.of(2021, 01, 11, 10, 10), 47.1234567, 19.1234567));
-        trackPoints.add(new TrackPoint(LocalDateTime.of(2021, 01, 12, 12, 12), 47.1234567, 19.1234567));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(activityDao.getClass().getResourceAsStream("/track.gpx")))) {
+            trackPoints = activityDao.fillTrackPoints(reader);
+        }
 
     }
 
     @Test
     void saveActivityTest() {
+
 
         Activity activity =
                 activityDao.saveActivity(new Activity(LocalDateTime.of(2021, 1, 11, 10, 12), "Leírás 1", ActivityType.BIKING, trackPoints));
@@ -146,4 +150,10 @@ class ActivityDaoTest {
     }
 
 
+    @Test
+    void fillTrackPoints() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(activityDao.getClass().getResourceAsStream("/track.gpx")))) {
+            activityDao.fillTrackPoints(reader);
+        }
+    }
 }

@@ -1,7 +1,6 @@
 package xtest.spring;
 
 import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.mariadb.jdbc.MariaDbDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +13,7 @@ public class Config {
 
     @Bean
     public Flyway flyway() {
-        FluentConfiguration flyway = Flyway.configure();
-        flyway.dataSource(dataSource());
-        return flyway.load();
+        return Flyway.configure().locations("/db/migration/employees").dataSource(dataSource()).load();
     }
 
 

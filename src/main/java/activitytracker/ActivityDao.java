@@ -1,6 +1,8 @@
 package activitytracker;
 
 import javax.sql.DataSource;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class ActivityDao {
                 conn.rollback();
                 return null;
             } catch (SQLException sqle) {
+                conn.rollback();
                 throw new IllegalStateException("Cannot insert", sqle);
             }
         } catch (SQLException sqlException) {
@@ -210,24 +213,54 @@ public class ActivityDao {
 
     public List<Activity> insertActivities(List<Activity> activities) {
         List<Activity> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "insert into activities(start_time, activity_desc,activity_type) values(?,?,?)",
-                     Statement.RETURN_GENERATED_KEYS
-             )) {
-            for (Activity activity : activities) {
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement stmt = conn.prepareStatement(
+                    "insert into activities(start_time, activity_desc,activity_type) values(?,?,?)",
+                    Statement.RETURN_GENERATED_KEYS)) {
 
-                stmt.setTimestamp(1, Timestamp.valueOf(activity.getStartTime()));
-                stmt.setString(2, activity.getDesc());
-                stmt.setString(3, activity.getType().toString());
-                stmt.executeUpdate();
-                long id = executeAndGetGeneratedKey(stmt);
-                result.add(new Activity(
-                        id, activity.getStartTime(), activity.getDesc(), activity.getType()));
+                for (Activity activity : activities) {
+                    if (activity.getDesc() == null) {
+                        throw new IllegalArgumentException("Description cannot be null");
+                    }
+
+                    stmt.setTimestamp(1, Timestamp.valueOf(activity.getStartTime()));
+                    stmt.setString(2, activity.getDesc());
+                    stmt.setString(3, activity.getType().toString());
+                    stmt.executeUpdate();
+                    long id = executeAndGetGeneratedKey(stmt);
+                    result.add(new Activity(
+                            id, activity.getStartTime(), activity.getDesc(), activity.getType()));
+                }
+                conn.commit();
+                return result;
+            } catch (Exception e) {
+                conn.rollback();
+                throw new SQLException(e);
             }
-            return result;
         } catch (SQLException sqlException) {
             throw new IllegalArgumentException("Cannot insert", sqlException);
         }
     }
+
+    public List<TrackPoint> fillTrackPoints(BufferedReader reader) throws IOException {
+
+        String line;
+        double lat = 0D;
+        double lon = 0D;
+        LocalDateTime dateTime;
+        List<TrackPoint> trackPoints = new ArrayList<>();
+        while ((line = reader.readLine()) != null) {
+            if (line.contains("<trkpt")) {
+                String[] parts = line.split("\"");
+                lat = Double.parseDouble(parts[1]);
+                lon = Double.parseDouble(parts[3]);
+            }
+            if (line.contains("<time>") && lat != 0) {
+                trackPoints.add(new TrackPoint(LocalDateTime.parse(line.substring(10, 29)), lat, lon));
+            }
+        }
+        return trackPoints;
+    }
+
 }
