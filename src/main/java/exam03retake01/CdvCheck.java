@@ -27,4 +27,28 @@ public class CdvCheck {
 
     }
 
+    public boolean ssnChecker(String ssn) {
+        int sum = 0;
+        int multiplier = 3;
+        for (int i = 0; i < ssn.length() - 1; i++) {
+            int number = ssn.charAt(i) - '0';
+            sum = sum + number * multiplier;
+            multiplier = multiplier == 3 ? 7 : 3;
+        }
+        sum = sum % 10;
+
+        if (sum == ssn.charAt(8) - '0') {
+            return true;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        CdvCheck cdvCheck = new CdvCheck();
+
+        System.out.println(cdvCheck.check("3943141829"));
+        System.out.println((cdvCheck.ssnChecker("519639869")));
+
+    }
+
 }
