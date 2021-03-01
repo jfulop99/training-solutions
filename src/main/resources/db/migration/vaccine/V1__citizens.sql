@@ -1,10 +1,3 @@
-create TABLE cities (
-	city_id BIGINT(10) NOT NULL,
-	order_id INT(10) NOT NULL,
-	shipment_date DATE NOT NULL,
-	PRIMARY KEY (city_id)
-	);
-
 
 create TABLE citizens (
 	citizen_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,

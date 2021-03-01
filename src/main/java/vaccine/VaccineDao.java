@@ -1,12 +1,12 @@
 package vaccine;
 
 import javax.sql.DataSource;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class VaccineDao {
 
@@ -16,42 +16,6 @@ public class VaccineDao {
         this.dataSource = dataSource;
     }
 
-    public List<Citizen> readCitizensFromFile(BufferedReader reader) throws IOException {
-        List<Citizen> citizens = new ArrayList<>();
-        List<String> wrongLines = new ArrayList<>();
-
-        String line;
-        reader.readLine();
-        System.out.println("Processing");
-        int counter = 0;
-        while ((line = reader.readLine()) != null) {
-            Optional<Citizen> citizen = lineParser(line);
-            if (citizen.isEmpty()) {
-                wrongLines.add(line);
-            } else {
-                citizens.add(citizen.get());
-            }
-            counter++;
-            if (counter == 200) {
-                counter = 0;
-                System.out.println("");
-            }
-        }
-        return citizens;
-    }
-
-    private Optional<Citizen> lineParser(String line) {
-        String[] parts = line.split(";");
-        System.out.print(".");
-        if (parts.length != 5 || selectPostalCode(parts[1]).isEmpty()) {
-            return Optional.empty();
-        }
-        try {
-            return Optional.of(new Citizen(parts[0], parts[1], Integer.parseInt(parts[2]), parts[3], parts[4]));
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
-        }
-    }
 
     public List<PostalCode> selectPostalCode(String postalCode) {
         try (Connection conn = dataSource.getConnection();
@@ -100,6 +64,9 @@ public class VaccineDao {
                 }
                 conn.commit();
                 return result;
+            } catch (SQLIntegrityConstraintViolationException e) {
+                conn.rollback();
+                throw new IllegalArgumentException("Van már ilyen TAJ számmal regisztráció ", e);
             } catch (Exception e) {
                 conn.rollback();
                 throw new SQLException(e);
@@ -123,5 +90,64 @@ public class VaccineDao {
         }
     }
 
+    public List<Citizen> getCitizenByPostalCode(String postalCode) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT citizen_id, citizen_name, zip, age, email, taj FROM citizens WHERE zip = ? ORDER BY citizen_id")) {
+            ps.setString(1, postalCode);
+            return getCitizenResults(ps);
+
+        } catch (SQLException sqle) {
+            throw new IllegalStateException("Cannot query", sqle);
+        }
+    }
+
+    private List<Citizen> getCitizenResults(PreparedStatement ps) {
+        List<Citizen> result = new ArrayList<>();
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                result.add(new Citizen(rs.getLong("citizen_id"), rs.getString("citizen_name"),
+                        rs.getString("zip"), rs.getInt("age"), rs.getString("email"),
+                        rs.getString("taj")));
+            }
+            return result;
+        } catch (SQLException sqle) {
+            throw new IllegalStateException("Cannot query", sqle);
+        }
+    }
+
+
+    public Map<String, List<PostalCode>> readPostalCodesFromDatabase() {
+        Map<String, List<PostalCode>> result = new TreeMap<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT id, zip, city, city_part FROM zip_numbers ORDER BY id")) {
+            return getPostalCodeResult(ps).stream().collect(Collectors.groupingBy(PostalCode::getZipNumber));
+
+        } catch (SQLException sqle) {
+            throw new IllegalStateException("Cannot query", sqle);
+        }
+    }
+
+    public List<Report> reportByPostalCodes() {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT zip, number_of_vaccination, " +
+                     "COUNT(citizen_id) AS 'Number of citizens' FROM citizens GROUP BY zip, number_of_vaccination ORDER BY zip, number_of_vaccination")) {
+            return getReportResults(ps);
+
+        } catch (SQLException sqle) {
+            throw new IllegalStateException("Cannot query", sqle);
+        }
+    }
+
+    private List<Report> getReportResults(PreparedStatement ps) {
+        List<Report> result = new ArrayList<>();
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                result.add(new Report(rs.getString(1), rs.getInt(2), rs.getInt(3)));
+            }
+            return result;
+        } catch (SQLException sqle) {
+            throw new IllegalStateException("Cannot query", sqle);
+        }
+    }
 
 }

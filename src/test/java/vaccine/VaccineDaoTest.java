@@ -5,14 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mariadb.jdbc.MariaDbDataSource;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class VaccineDaoTest {
 
@@ -44,15 +42,6 @@ class VaccineDaoTest {
     }
 
     @Test
-    void readCitizensFromFile() throws IOException {
-        List<Citizen> citizens;
-        try (BufferedReader reader = Files.newBufferedReader(Path.of("registered_tesztfile.csv"))) {
-            citizens = vaccineDao.readCitizensFromFile(reader);
-        }
-        assertEquals(3014, citizens.size());
-    }
-
-    @Test
     void selectPostalCode() {
         assertEquals("Szentendre", vaccineDao.selectPostalCode("2000").get(0).getCity());
         assertEquals(2, vaccineDao.selectPostalCode("8999").size());
@@ -61,15 +50,49 @@ class VaccineDaoTest {
     }
 
     @Test
-    void insertCitizens() throws IOException {
-        List<Citizen> citizens;
-        try (BufferedReader reader = Files.newBufferedReader(Path.of("registered_tesztfile.csv"))) {
-            citizens = vaccineDao.readCitizensFromFile(reader);
-        }
-        assertEquals(3014, citizens.size());
+    void insertCitizens() {
+        List<Citizen> citizens = List.of(new Citizen("John Doe", "8999", 43, "john.doe@java.com", "982553309"),
+                new Citizen("Jane Doe", "2000", 33, "jane.doe@java.com", "253033873"));
 
         citizens = vaccineDao.insertCitizens(citizens);
-        assertEquals(3014, citizens.size());
+        assertEquals(2, citizens.size());
+        assertEquals("982553309", vaccineDao.getCitizenByPostalCode("8999").get(0).getTajNumber());
     }
 
+    @Test
+    void insertCitizensWithSameTajNumber() {
+        List<Citizen> citizens = List.of(new Citizen("John Doe", "8999", 43, "john.doe@java.com", "982553309"),
+                new Citizen("Jane Doe", "2000", 33, "jane.doe@java.com", "253033873"));
+
+        citizens = vaccineDao.insertCitizens(citizens);
+        assertEquals(2, citizens.size());
+        assertEquals("982553309", vaccineDao.getCitizenByPostalCode("8999").get(0).getTajNumber());
+
+        Exception ex = assertThrows(IllegalArgumentException.class,
+                () -> vaccineDao.insertCitizens(
+                        List.of(new Citizen("Jane Doe", "2000", 33, "jane.doe@java.com", "253033873"))));
+    }
+
+    @Test
+    void readPostalCodesFromDatabase() {
+
+        Map<String, List<PostalCode>> result = vaccineDao.readPostalCodesFromDatabase();
+        assertEquals(2, result.get("8999").size());
+
+    }
+
+    @Test
+    void reportByPostalCodes() {
+        List<Citizen> citizens = List.of(new Citizen("John Doe", "8999", 43, "john.doe@java.com", "982553309"),
+                new Citizen("Jane Doe", "2000", 33, "jane.doe@java.com", "253033873"),
+                new Citizen("Jack Doe", "2000", 33, "jane.doe@java.com", "987938978"),
+                new Citizen("Joe Doe", "2000", 33, "jane.doe@java.com", "916357461"),
+                new Citizen("Jill Doe", "2000", 33, "jane.doe@java.com", "745587394")
+        );
+        citizens = vaccineDao.insertCitizens(citizens);
+        assertEquals(5, citizens.size());
+        assertEquals(2, vaccineDao.reportByPostalCodes().size());
+
+
+    }
 }
