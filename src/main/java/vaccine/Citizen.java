@@ -53,4 +53,9 @@ public class Citizen {
     public long getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return fullName + ";" + zipNumber + ";" + age + ";" + emailAddress + ";" + tajNumber + "\n";
+    }
 }

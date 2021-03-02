@@ -19,7 +19,7 @@ public class VaccineValidator {
 
     private static final int MAX_AGE = 150;
 
-    private Map<String, List<PostalCode>> postalCodes;
+    private final Map<String, List<PostalCode>> postalCodes;
 
     public VaccineValidator(Map<String, List<PostalCode>> postalCodes) {
         this.postalCodes = postalCodes;

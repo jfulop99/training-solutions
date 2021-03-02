@@ -9,8 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class VaccineDaoTest {
 
@@ -56,7 +55,6 @@ class VaccineDaoTest {
 
         citizens = vaccineDao.insertCitizens(citizens);
         assertEquals(2, citizens.size());
-        assertEquals("982553309", vaccineDao.getCitizenByPostalCode("8999").get(0).getTajNumber());
     }
 
     @Test
@@ -66,7 +64,6 @@ class VaccineDaoTest {
 
         citizens = vaccineDao.insertCitizens(citizens);
         assertEquals(2, citizens.size());
-        assertEquals("982553309", vaccineDao.getCitizenByPostalCode("8999").get(0).getTajNumber());
 
         Exception ex = assertThrows(IllegalArgumentException.class,
                 () -> vaccineDao.insertCitizens(
@@ -83,16 +80,36 @@ class VaccineDaoTest {
 
     @Test
     void reportByPostalCodes() {
-        List<Citizen> citizens = List.of(new Citizen("John Doe", "8999", 43, "john.doe@java.com", "982553309"),
-                new Citizen("Jane Doe", "2000", 33, "jane.doe@java.com", "253033873"),
-                new Citizen("Jack Doe", "2000", 33, "jane.doe@java.com", "987938978"),
-                new Citizen("Joe Doe", "2000", 33, "jane.doe@java.com", "916357461"),
-                new Citizen("Jill Doe", "2000", 33, "jane.doe@java.com", "745587394")
-        );
-        citizens = vaccineDao.insertCitizens(citizens);
-        assertEquals(5, citizens.size());
-        assertEquals(2, vaccineDao.reportByPostalCodes().size());
+        assertEquals(30, vaccineDao.reportByPostalCodes().size());
 
+
+    }
+
+    @Test
+    void isTajExist() {
+        assertTrue(vaccineDao.isTajExist("336883645"));
+        assertFalse(vaccineDao.isTajExist("333333333"));
+    }
+
+    @Test
+    void getCitizensForVaccination() {
+
+        assertEquals(393, vaccineDao.getCitizensForVaccination().size());
+
+    }
+
+    @Test
+    void getCitizenByTaj() {
+
+        assertEquals(1000, vaccineDao.getCitizenByTaj("618871089").getId());
+
+    }
+
+    @Test
+    void getVaccinationByCitizenId() {
+
+        assertEquals(2, vaccineDao.getVaccinationByCitizenId(1000).size());
+        assertEquals(VaccineType.SINOPHARM, vaccineDao.getVaccinationByCitizenId(1000).get(0).getVaccineType());
 
     }
 }

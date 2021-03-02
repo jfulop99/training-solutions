@@ -5,11 +5,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class VaccineDao {
 
+    public static final String CANNOT_QUERY_MESSAGE = "Cannot query";
     private DataSource dataSource;
 
     public VaccineDao(DataSource dataSource) {
@@ -24,7 +24,7 @@ public class VaccineDao {
             return getPostalCodeResult(ps);
 
         } catch (SQLException sqle) {
-            throw new IllegalStateException("Cannot query", sqle);
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
         }
     }
 
@@ -37,7 +37,7 @@ public class VaccineDao {
             }
             return postalCodes;
         } catch (SQLException sqle) {
-            throw new IllegalStateException("Cannot query", sqle);
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
         }
     }
 
@@ -97,7 +97,7 @@ public class VaccineDao {
             return getCitizenResults(ps);
 
         } catch (SQLException sqle) {
-            throw new IllegalStateException("Cannot query", sqle);
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
         }
     }
 
@@ -111,19 +111,17 @@ public class VaccineDao {
             }
             return result;
         } catch (SQLException sqle) {
-            throw new IllegalStateException("Cannot query", sqle);
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
         }
     }
 
-
     public Map<String, List<PostalCode>> readPostalCodesFromDatabase() {
-        Map<String, List<PostalCode>> result = new TreeMap<>();
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT id, zip, city, city_part FROM zip_numbers ORDER BY id")) {
             return getPostalCodeResult(ps).stream().collect(Collectors.groupingBy(PostalCode::getZipNumber));
 
         } catch (SQLException sqle) {
-            throw new IllegalStateException("Cannot query", sqle);
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
         }
     }
 
@@ -134,7 +132,7 @@ public class VaccineDao {
             return getReportResults(ps);
 
         } catch (SQLException sqle) {
-            throw new IllegalStateException("Cannot query", sqle);
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
         }
     }
 
@@ -146,8 +144,66 @@ public class VaccineDao {
             }
             return result;
         } catch (SQLException sqle) {
-            throw new IllegalStateException("Cannot query", sqle);
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
         }
     }
 
+    public boolean isTajExist(String tajNumber) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT citizen_id FROM citizens WHERE taj = ?")) {
+            ps.setString(1, tajNumber);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            } catch (SQLException sqle) {
+                throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
+            }
+        } catch (SQLException sqle) {
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
+        }
+    }
+
+    public List<Citizen> getCitizensForVaccination() {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT citizen_id, citizen_name, zip, age, email, taj" +
+                     " FROM citizens WHERE number_of_vaccination = 0 OR (number_of_vaccination = 1 AND DATEDIFF(NOW(),`last_vaccination`) > 15) ORDER BY zip, age DESC")) {
+            return getCitizenResults(ps);
+        } catch (SQLException sqle) {
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
+        }
+    }
+
+    public Citizen getCitizenByTaj(String taj) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT citizen_id, citizen_name, zip, age, email, taj FROM citizens WHERE taj = ?")) {
+            ps.setString(1, taj);
+            return getCitizenResults(ps).get(0);
+        } catch (SQLException sqle) {
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
+        }
+    }
+
+    public List<Vaccination> getVaccinationByCitizenId(long id) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT citizen_id, vaccination_date, vaccination_status, note, vaccination_type " +
+                     "FROM vaccinations WHERE citizen_id = ? ORDER BY vaccination_date")) {
+            ps.setLong(1, id);
+            return getVaccinationResults(ps);
+        } catch (SQLException sqle) {
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
+        }
+    }
+
+    private List<Vaccination> getVaccinationResults(PreparedStatement ps) {
+        List<Vaccination> result = new ArrayList<>();
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                result.add(new Vaccination(rs.getLong("citizen_id"),
+                        rs.getTimestamp("vaccination_date").toLocalDateTime(), rs.getString("vaccination_status"),
+                        rs.getString("note"), VaccineType.valueOf(rs.getString("vaccination_type"))));
+            }
+            return result;
+        } catch (SQLException sqle) {
+            throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
+        }
+    }
 }

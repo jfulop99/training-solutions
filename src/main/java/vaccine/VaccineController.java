@@ -6,75 +6,69 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class VaccineController {
 
-    private DataSource dataSource;
+    public static final String EXIST_SIGN = "Exist";
+    public static final String COLUMN_SEPARATOR = ";";
 
     private VaccineDao vaccineDao;
 
     private VaccineValidator vaccineValidator;
 
-    private Map<String, List<PostalCode>> postalCodes;
-
     public VaccineController(DataSource dataSource) {
-        this.dataSource = dataSource;
 
         vaccineDao = new VaccineDao(dataSource);
 
-        postalCodes = vaccineDao.readPostalCodesFromDatabase();
-
-        vaccineValidator = new VaccineValidator(postalCodes);
+        vaccineValidator = new VaccineValidator(vaccineDao.readPostalCodesFromDatabase());
     }
 
 
     public List<Citizen> readCitizensFromFile(BufferedReader reader) throws IOException {
         List<Citizen> citizens = new ArrayList<>();
-        List<String> wrongLines = new ArrayList<>();
+        List<String> pocessedLines = new ArrayList<>();
 
         String line;
         reader.readLine();
-        System.out.println("Processing");
-        int counter = 0;
         while ((line = reader.readLine()) != null) {
             Optional<Citizen> citizen = lineParser(line);
             if (citizen.isEmpty()) {
-                wrongLines.add(line);
+                pocessedLines.add("***** Hibás adat(ok) ***** " + line);
             } else {
-                citizens.add(citizen.get());
-            }
-            counter++;
-            if (counter == 200) {
-                counter = 0;
-                System.out.println("");
+                if (EXIST_SIGN.equals(citizen.get().getFullName())) {
+                    pocessedLines.add("***** Regisztrált TAJ szám ***** " + line);
+                } else {
+                    pocessedLines.add("--- Feldogozott " + line);
+                    citizens.add(citizen.get());
+                }
             }
         }
-        if (!wrongLines.isEmpty()) {
-            writeErrorList(wrongLines);
-        }
+        writeErrorList(pocessedLines);
         return citizens;
     }
 
     private void writeErrorList(List<String> wrongLines) {
-        System.out.println("Hibás sorok száma:" + wrongLines.size());
-        try (BufferedWriter writer = Files.newBufferedWriter(Path.of("temp/vaccine/hibalista.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Path.of("temp/vaccine/inputresult.txt"))) {
+            writer.write("Process report\nDate: " + LocalDateTime.now());
+            writer.newLine();
+            int lineNumber = 1;
             for (String line : wrongLines) {
-                writer.write(line);
-                writer.newLine();
+                writer.write(String.format("%6d %s%n", lineNumber++, line));
             }
         } catch (IOException e) {
-            System.out.println("Cannot write file");
+            throw new IllegalStateException("Cannot write file");
         }
-        System.out.println("Hibalista kész!");
     }
 
     private Optional<Citizen> lineParser(String line) {
-        String[] parts = line.split(";");
-        System.out.print(".");
+        String[] parts = line.split(COLUMN_SEPARATOR);
         if (parts.length != 5) {
             return Optional.empty();
         }
@@ -83,6 +77,11 @@ public class VaccineController {
         String age = parts[2];
         String email = parts[3];
         String taj = parts[4];
+
+        if (vaccineDao.isTajExist(taj)) {
+            return Optional.of(new Citizen(EXIST_SIGN, "0000", 100, "a@.hu", "000000000"));
+        }
+
         if (!vaccineValidator.isEmpty(name) && !vaccineValidator.getPostalCode(zip).isEmpty()
                 && vaccineValidator.isValidAge(age) && vaccineValidator.isValidEmail(email)
                 && vaccineValidator.isValidTajNumber(taj)) {
@@ -91,24 +90,19 @@ public class VaccineController {
         return Optional.empty();
     }
 
-    public void massRegistration(BufferedReader reader) throws IOException {
-        System.out.println("2. Tömeges regisztráció");
+    public int massRegistration(BufferedReader reader) throws IOException {
         List<Citizen> citizens;
-        List<Citizen> result = new ArrayList<>();
+        List<Citizen> result;
         citizens = readCitizensFromFile(reader);
-        try {
-            result = vaccineDao.insertCitizens(citizens);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Rollback.. " + e.getMessage());
-        }
-        System.out.println(result.size() + " records inserted");
+        result = vaccineDao.insertCitizens(citizens);
+        return result.size();
     }
 
 
     public void reportByPostalCode() {
         List<Report> reports = vaccineDao.reportByPostalCodes();
         try (BufferedWriter writer = Files.newBufferedWriter(Path.of("temp/vaccine/report.txt"))) {
-            writer.write("Report");
+            writer.write("Report" + LocalDateTime.now());
             writer.newLine();
             writer.write("Postal Code Number of vaccination Number of citizens");
             writer.newLine();
@@ -120,4 +114,49 @@ public class VaccineController {
         }
     }
 
+    public int callReportGenerator() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm;");
+        LocalTime appointment = LocalTime.of(8, 0);
+        StringBuilder sb = new StringBuilder("Időpont;Név;Irányítószám;Életkor;E-mail cím;TAJ szám\n");
+
+        List<Citizen> citizens = vaccineDao.getCitizensForVaccination();
+        String prevPostalCode = citizens.get(0).getZipNumber();
+        int fileCounter = 1;
+
+        for (Citizen citizen : citizens) {
+            if (!prevPostalCode.equals(citizen.getZipNumber())) {
+                writeReportToFile(prevPostalCode, sb.toString());
+                appointment = LocalTime.of(8, 0);
+                prevPostalCode = citizen.getZipNumber();
+                sb = new StringBuilder("Időpont;Név;Irányítószám;Életkor;E-mail cím;TAJ szám\n");
+                fileCounter++;
+            }
+            if (appointment.isBefore(LocalTime.of(16, 0))) {
+                sb.append(appointment.format(format));
+                sb.append(citizen.toString());
+                appointment = appointment.plusMinutes(30);
+            }
+        }
+        writeReportToFile(prevPostalCode, sb.toString());
+        return fileCounter;
+    }
+
+    private void writeReportToFile(String postalCode, String content) {
+        Path path = Path.of("temp/vaccine/" + postalCode + "_" + LocalDate.now().toString() + ".txt");
+        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+            writer.write(content);
+        } catch (IOException e) {
+            throw new IllegalStateException("File írási hiba " + path.toString() + e.getMessage());
+        }
+    }
+
+    public boolean isRegisteredTaj(String taj) {
+        return vaccineDao.isTajExist(taj);
+    }
+
+    public VaccinationData getCitizenDatas(String taj) {
+        Citizen citizen = vaccineDao.getCitizenByTaj(taj);
+        long id = citizen.getId();
+        return new VaccinationData(citizen, vaccineDao.getVaccinationByCitizenId(id));
+    }
 }

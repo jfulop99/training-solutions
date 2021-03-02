@@ -13,6 +13,13 @@ public class UserInterface {
 
     private Scanner sc;
 
+    private VaccineController vaccineController;
+
+    public UserInterface(VaccineController vaccineController) {
+        sc = new Scanner(System.in);
+        this.vaccineController = vaccineController;
+    }
+
     public void printMenu() {
 
         System.out.println("1. Regisztráció");
@@ -26,12 +33,90 @@ public class UserInterface {
     }
 
 
-    public UserInterface() {
-        sc = new Scanner(System.in);
+    public void mainMenu() {
+
+        String select;
+
+        printMenu();
+
+        while (!"0".equals(select = sc.nextLine())) {
+            try {
+
+                switch (select) {
+                    case "1" -> System.out.println("1. Regisztráció");
+                    case "2" -> massRegistration();
+                    case "3" -> callReportGeneration();
+                    case "4" -> vaccination();
+                    case "5" -> System.out.println("5. Oltás meghiúsulás");
+                    case "6" -> reportGeneration();
+                    default -> System.out.println("Hibás választás");
+                }
+            } catch (IllegalStateException | IllegalArgumentException e) {
+                System.out.println("Hiba!  " + e.getMessage());
+            }
+            System.out.println("Press ENTER to continue");
+            sc.nextLine();
+            printMenu();
+        }
     }
 
-    public Scanner getSc() {
-        return sc;
+    public void vaccination() {
+        System.out.println("4. Oltás");
+        System.out.println("Kérem a TAJ számot: ");
+        String taj = sc.nextLine();
+        if (!vaccineController.isRegisteredTaj(taj)) {
+            System.out.println("Nincs ilyen TAJ szám");
+            return;
+        }
+        VaccinationData vaccinationData = vaccineController.getCitizenDatas(taj);
+        printVaccinationData(vaccinationData);
+
+
+    }
+
+    private void printVaccinationData(VaccinationData vaccinationData) {
+        System.out.println(" TAJ szám                         Páciens neve");
+        System.out.println(String.format("%10s %40s ", vaccinationData.getCitizen().getTajNumber(), vaccinationData.getCitizen().getFullName()));
+        System.out.println("---------------------- Oltási adatok -------------------------------------------------------------------------");
+        System.out.println(String.format(" Dátum:          %20s %20s %50s", "Vakcina típus", "Státusz", "Megjegyzés"));
+        for (Vaccination item : vaccinationData.getVaccinations()) {
+            System.out.println(String.format("%tY.%<tm.%<td %<tH:%<tM %20s %20s %50s", item.getVaccinationDate(),
+                    item.getVaccineType().toString(), item.getStatus(), item.getNote()));
+        }
+    }
+
+    public void callReportGeneration() {
+        System.out.println("3. Generálás");
+        int fileCount = vaccineController.callReportGenerator();
+        System.out.println("A fájlok (" + fileCount + ") elkészültek XXXX_ÉÉÉÉ-HH-NN.txt néven (XXXX irányítószám)");
+    }
+
+    public void reportGeneration() {
+        System.out.println("6. Riport generálás");
+        vaccineController.reportByPostalCode();
+        System.out.println("A riport.txt fájl elkészült");
+    }
+
+    public void massRegistration() {
+        boolean endOfRead = true;
+
+        while (endOfRead) {
+            System.out.println("2. Tömeges regisztráció");
+            System.out.print("Kérem a beolvasandó fálj nevét (pl.: teszt.csv): ");
+            String fileName = sc.nextLine();
+            if (fileName.isBlank()) {
+                endOfRead = false;
+            } else {
+                try (BufferedReader reader = Files.newBufferedReader(Path.of(fileName))) {
+                    System.out.println("Processing...");
+                    int records = vaccineController.massRegistration(reader);
+                    endOfRead = false;
+                    System.out.println(records + " records inserted (see inputresult.txt)");
+                } catch (IOException e) {
+                    System.out.println("Hibás fájlnév " + fileName);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -45,42 +130,12 @@ public class UserInterface {
             throw new IllegalStateException("Can not create datasource", sqlException);
         }
 
-
-        UserInterface userInterface = new UserInterface();
         VaccineController vaccineController = new VaccineController(dataSource);
-        userInterface.printMenu();
-        Scanner sc = userInterface.getSc();
-        String select;
-        while (!"0".equals(select = sc.nextLine())) {
-            switch (select) {
-                case "1" -> System.out.println("1. Regisztráció");
-                case "2" -> userInterface.massRegistration(vaccineController);
-                case "3" -> System.out.println("3. Generálás");
-                case "4" -> System.out.println("4. Oltás");
-                case "5" -> System.out.println("5. Oltás meghiúsulás");
-                case "6" -> vaccineController.reportByPostalCode();
-                default -> System.out.println("Hibás választás");
-            }
-            System.out.println("Press ENTER to continue");
-            sc.nextLine();
-            userInterface.printMenu();
-        }
 
+        UserInterface userInterface = new UserInterface(vaccineController);
+
+        userInterface.mainMenu();
     }
 
-    public void massRegistration(VaccineController vaccineController) {
 
-        boolean endOfRead = true;
-        while (endOfRead) {
-            System.out.print("Kérem a beolvasandó fálj nevét (registered_tesztfile.csv): ");
-            String fileName = sc.nextLine();
-
-            try (BufferedReader reader = Files.newBufferedReader(Path.of(fileName))) {
-                vaccineController.massRegistration(reader);
-                endOfRead = false;
-            } catch (IOException e) {
-                System.out.println("Hibás fájlnév " + fileName);
-            }
-        }
-    }
 }

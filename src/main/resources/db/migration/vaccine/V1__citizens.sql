@@ -1,4 +1,3 @@
-
 create TABLE citizens (
 	citizen_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
 	citizen_name VARCHAR(50) NOT NULL,
@@ -10,6 +9,7 @@ create TABLE citizens (
 	last_vaccination DATETIME,
 	PRIMARY KEY (citizen_id)
 );
+
 
 create TABLE vaccinations (
 	vaccination_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
