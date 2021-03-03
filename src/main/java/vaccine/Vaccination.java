@@ -8,13 +8,13 @@ public class Vaccination {
 
     private final LocalDateTime vaccinationDate;
 
-    private final String status;
+    private final VaccinationStatus status;
 
     private final String note;
 
     private final VaccineType vaccineType;
 
-    public Vaccination(long citizenId, LocalDateTime vaccinationDate, String status, String note, VaccineType vaccineType) {
+    public Vaccination(long citizenId, LocalDateTime vaccinationDate, VaccinationStatus status, String note, VaccineType vaccineType) {
         this.citizenId = citizenId;
         this.vaccinationDate = vaccinationDate;
         this.status = status;
@@ -30,7 +30,7 @@ public class Vaccination {
         return vaccinationDate;
     }
 
-    public String getStatus() {
+    public VaccinationStatus getStatus() {
         return status;
     }
 

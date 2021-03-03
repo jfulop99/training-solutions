@@ -15,7 +15,7 @@ create TABLE vaccinations (
 	vaccination_id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
 	citizen_id BIGINT NOT NULL,
 	vaccination_date DATETIME NOT NULL,
-	vaccination_status VARCHAR(10) NOT NULL,
+	vaccination_status VARCHAR(20) NOT NULL,
 	note VARCHAR(255),
 	vaccination_type VARCHAR(20),
 	PRIMARY KEY (vaccination_id),

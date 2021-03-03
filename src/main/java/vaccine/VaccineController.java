@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class VaccineController {
 
@@ -30,6 +31,9 @@ public class VaccineController {
         vaccineValidator = new VaccineValidator(vaccineDao.readPostalCodesFromDatabase());
     }
 
+    public VaccineValidator getVaccineValidator() {
+        return vaccineValidator;
+    }
 
     public List<Citizen> readCitizensFromFile(BufferedReader reader) throws IOException {
         List<Citizen> citizens = new ArrayList<>();
@@ -114,13 +118,23 @@ public class VaccineController {
         }
     }
 
-    public int callReportGenerator() {
+    public int callReportGenerator(String postalCode) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm;");
         LocalTime appointment = LocalTime.of(8, 0);
         StringBuilder sb = new StringBuilder("Időpont;Név;Irányítószám;Életkor;E-mail cím;TAJ szám\n");
 
         List<Citizen> citizens = vaccineDao.getCitizensForVaccination();
         String prevPostalCode = citizens.get(0).getZipNumber();
+        if (!postalCode.isBlank()) {
+            prevPostalCode = postalCode;
+            citizens = citizens
+                    .stream()
+                    .filter(c -> c.getZipNumber().equals(postalCode))
+                    .collect(Collectors.toList());
+        }
+        if (citizens.isEmpty()) {
+            return 0;
+        }
         int fileCounter = 1;
 
         for (Citizen citizen : citizens) {
@@ -158,5 +172,15 @@ public class VaccineController {
         Citizen citizen = vaccineDao.getCitizenByTaj(taj);
         long id = citizen.getId();
         return new VaccinationData(citizen, vaccineDao.getVaccinationByCitizenId(id));
+    }
+
+    public void insertVaccination(Vaccination vaccination) {
+
+        vaccineDao.insertVaccination(vaccination);
+
+    }
+
+    public Citizen insertCitizen(Citizen citizen) {
+        return vaccineDao.insertCitizens(List.of(citizen)).get(0);
     }
 }

@@ -2,6 +2,7 @@ package vaccine;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -163,9 +164,14 @@ public class VaccineDao {
     }
 
     public List<Citizen> getCitizensForVaccination() {
+        return getCitizensForVaccination(LocalDateTime.now());
+    }
+
+    public List<Citizen> getCitizensForVaccination(LocalDateTime localDateTime) {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT citizen_id, citizen_name, zip, age, email, taj" +
-                     " FROM citizens WHERE number_of_vaccination = 0 OR (number_of_vaccination = 1 AND DATEDIFF(NOW(),`last_vaccination`) > 15) ORDER BY zip, age DESC")) {
+                     " FROM citizens WHERE number_of_vaccination = 0 OR (number_of_vaccination = 1 AND DATEDIFF(?,`last_vaccination`) > 15) ORDER BY zip, age DESC")) {
+            ps.setTimestamp(1, Timestamp.valueOf(localDateTime));
             return getCitizenResults(ps);
         } catch (SQLException sqle) {
             throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
@@ -198,7 +204,8 @@ public class VaccineDao {
         try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 result.add(new Vaccination(rs.getLong("citizen_id"),
-                        rs.getTimestamp("vaccination_date").toLocalDateTime(), rs.getString("vaccination_status"),
+                        rs.getTimestamp("vaccination_date").toLocalDateTime(),
+                        VaccinationStatus.valueOf(rs.getString("vaccination_status")),
                         rs.getString("note"), VaccineType.valueOf(rs.getString("vaccination_type"))));
             }
             return result;
@@ -206,4 +213,54 @@ public class VaccineDao {
             throw new IllegalStateException(CANNOT_QUERY_MESSAGE, sqle);
         }
     }
+
+    public void insertVaccination(Vaccination vaccination) {
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                insertRecordToVaccinations(conn, vaccination);
+                VaccinationStatus status = vaccination.getStatus();
+                if (status == VaccinationStatus.FIRST_VACCINATION || status == VaccinationStatus.SECOND_VACCINATION) {
+                    updateCitizenWithVaccination(conn, vaccination);
+                }
+                conn.commit();
+            } catch (IllegalStateException e) {
+                conn.rollback();
+                throw new IllegalStateException("Rollback...", e);
+            }
+        } catch (SQLException sqlException) {
+            throw new IllegalStateException("Cannot update", sqlException);
+        }
+    }
+
+    private void updateCitizenWithVaccination(Connection conn, Vaccination vaccination) {
+        try (PreparedStatement ps =
+                     conn.prepareStatement("UPDATE citizens SET number_of_vaccination = ?, last_vaccination = ? WHERE citizen_id = ?")) {
+            ps.setInt(1, vaccination.getStatus().ordinal());
+            ps.setTimestamp(2, Timestamp.valueOf(vaccination.getVaccinationDate()));
+            ps.setLong(3, vaccination.getCitizenId());
+            ps.executeUpdate();
+        } catch (SQLException sqlException) {
+            throw new IllegalStateException("Cannot update citizen", sqlException);
+        }
+    }
+
+    private void insertRecordToVaccinations(Connection conn, Vaccination vaccination) {
+        try (PreparedStatement ps =
+                     conn.prepareStatement("INSERT INTO vaccinations (citizen_id, vaccination_date, vaccination_status, note, vaccination_type ) VALUES (?, ?, ?, ?, ?)")) {
+            ps.setLong(1, vaccination.getCitizenId());
+            ps.setTimestamp(2, Timestamp.valueOf(vaccination.getVaccinationDate()));
+            ps.setString(3, vaccination.getStatus().name());
+            ps.setString(4, vaccination.getNote());
+            ps.setString(5, null);
+            if (vaccination.getVaccineType() != null) {
+                ps.setString(5, vaccination.getVaccineType().name());
+            }
+            ps.executeUpdate();
+
+        } catch (SQLException sqlException) {
+            throw new IllegalStateException("Vaccination insert error", sqlException);
+        }
+    }
+
 }

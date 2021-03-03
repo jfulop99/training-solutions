@@ -1,0 +1,5 @@
+package vaccine;
+
+public enum VaccinationStatus {
+    NO_VACCINATION, FIRST_VACCINATION, SECOND_VACCINATION, REJECTION, HEALTH_REASON
+}

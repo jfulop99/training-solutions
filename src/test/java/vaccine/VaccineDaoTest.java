@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mariadb.jdbc.MariaDbDataSource;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -94,7 +95,7 @@ class VaccineDaoTest {
     @Test
     void getCitizensForVaccination() {
 
-        assertEquals(393, vaccineDao.getCitizensForVaccination().size());
+        assertEquals(393, vaccineDao.getCitizensForVaccination(LocalDateTime.of(2021, 03, 02, 8, 0)).size());
 
     }
 
@@ -110,6 +111,16 @@ class VaccineDaoTest {
 
         assertEquals(2, vaccineDao.getVaccinationByCitizenId(1000).size());
         assertEquals(VaccineType.SINOPHARM, vaccineDao.getVaccinationByCitizenId(1000).get(0).getVaccineType());
+
+    }
+
+    @Test
+    void insertVaccination() {
+        Vaccination vaccination = new Vaccination(999, LocalDateTime.now(), VaccinationStatus.FIRST_VACCINATION, "Insert vaccination test", VaccineType.PFIZER_BIONTECH);
+
+        vaccineDao.insertVaccination(vaccination);
+        List<Vaccination> result = vaccineDao.getVaccinationByCitizenId(999);
+        assertEquals(VaccinationStatus.FIRST_VACCINATION, result.get(0).getStatus());
 
     }
 }

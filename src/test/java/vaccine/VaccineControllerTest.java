@@ -35,9 +35,9 @@ class VaccineControllerTest {
     void readCitizensFromFile() throws IOException {
 
         List<Citizen> citizens;
-        try (BufferedReader reader = Files.newBufferedReader(Path.of("registered_tesztfile.csv"))) {
+        try (BufferedReader reader = Files.newBufferedReader(Path.of("teszt.csv"))) {
             citizens = vaccineController.readCitizensFromFile(reader);
         }
-        assertEquals(2981, citizens.size());
+        assertEquals(2979, citizens.size());
     }
 }
