@@ -182,7 +182,7 @@ public class UserInterface {
     }
 
     private void rejectedVaccination(VaccinationData vaccinationData) {
-        VaccineType vaccineType = null;
+        VaccineType vaccineType = VaccineType.NO_VACCINE;
         VaccinationStatus vaccinationStatus = null;
 
         int select = Integer.parseInt(selectOption("Kérem a meghiúsulás okát : (1:Visszautasítás, 2:Egészségügyi porbléma) ", "1", "2"));
