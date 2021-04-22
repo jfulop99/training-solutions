@@ -2,6 +2,8 @@ package xtest.manikola;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -127,5 +129,34 @@ class ArraysExerciseTest {
         assertEquals(4, arraysExercise.longestSortedSequence(new int[]{3, 8, 10, 1, 9, 14, -3, 0, 14, 207, 56, 98, 12}));
         assertEquals(5, arraysExercise.longestSortedSequence(new int[]{17, 42, 3, 5, 5, 5, 8, 2, 4, 6, 1, 19}));
         assertEquals(0, arraysExercise.longestSortedSequence(new int[]{}));
+    }
+
+    @Test
+    void contains() {
+        int[] a1 = new int[]{1, 6, 2, 1, 4, 1, 2, 1, 8};
+        int[] a2 = new int[]{1, 2, 1};
+        int[] a3 = new int[]{2, 1, 2};
+        int[] a4 = new int[]{2, 1, 2};
+
+        assertEquals(true, ArraysExercise.contains(a1, a2));
+        assertEquals(false, ArraysExercise.contains(a2, a1));
+        assertEquals(false, ArraysExercise.contains(a1, a3));
+        assertEquals(true, ArraysExercise.contains(a3, a4));
+    }
+
+    @Test
+    void collapse() {
+        int[] a1 = new int[]{7, 2, 8, 9, 4, 13, 7, 1, 9, 10};
+        int[] a2 = new int[]{9, 17, 17, 8, 19};
+
+        int[] b1 = new int[]{1, 2, 3, 4, 5};
+        int[] b2 = new int[]{3, 7, 5};
+
+        int[] d1 = new int[]{2, 2, 2, 2};
+        int[] d2 = new int[]{4, 4};
+
+        assertEquals(true, Arrays.equals(a2, arraysExercise.collapse(a1)));
+        assertEquals(true, Arrays.equals(b2, arraysExercise.collapse(b1)));
+        assertEquals(true, Arrays.equals(d2, arraysExercise.collapse(d1)));
     }
 }

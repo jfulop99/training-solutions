@@ -172,4 +172,43 @@ public class ArraysExercise {
         }
         return prevCounter;
     }
+
+    public static boolean contains(int[] a1, int[] a2) {
+        int counter = 0;
+        boolean in = false;
+        for (int item : a1) {
+            if (in) {
+                if (item == a2[counter]) {
+                    counter++;
+                    if (counter == a2.length) {
+                        return true;
+                    }
+                } else {
+                    in = !in;
+                    counter = 0;
+                }
+            } else {
+                if (item == a2[counter]) {
+                    in = !in;
+                    counter++;
+                }
+            }
+        }
+        return false;
+    }
+
+    public int[] collapse(int[] a1) {
+        int[] result = new int[a1.length / 2 + a1.length % 2];
+        int counter = 0;
+        for (int i = 0; i < a1.length; i += 2) {
+            int next = i + 1;
+            if (next != a1.length) {
+                result[counter] = a1[i] + a1[next];
+                counter++;
+            } else {
+                result[counter] = a1[i];
+            }
+        }
+        return result;
+    }
 }
