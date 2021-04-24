@@ -159,4 +159,34 @@ class ArraysExerciseTest {
         assertEquals(true, Arrays.equals(b2, arraysExercise.collapse(b1)));
         assertEquals(true, Arrays.equals(d2, arraysExercise.collapse(d1)));
     }
+
+    @Test
+    void append() {
+        int[] a1 = new int[]{2, 4, 6};
+        int[] a2 = new int[]{1, 2, 3, 4, 5};
+
+        int[] result1 = new int[]{2, 4, 6, 1, 2, 3, 4, 5};
+        int[] result2 = new int[]{1, 2, 3, 4, 5, 2, 4, 6};
+
+        assertEquals(true, Arrays.equals(result1, arraysExercise.append(a1, a2)));
+        assertEquals(true, Arrays.equals(result2, arraysExercise.append(a2, a1)));
+    }
+
+    @Test
+    void vowelCount() {
+        int[] r = new int[]{1, 3, 3, 1, 0};
+
+        assertEquals(true, Arrays.equals(r, ArraysExercise.vowelCount("i think, therefore i am")));
+    }
+
+    @Test
+    void evenBeforeOdd() {
+        int[] result = arraysExercise.evenBeforeOdd(new int[]{5, 4, 2, 11, 9, 10, 4, 7, 3});
+
+
+        assertEquals(true, result[3] % 2 == 0);
+        assertEquals(true, result[2] % 2 == 0);
+        assertEquals(true, result[1] % 2 == 0);
+        assertEquals(true, result[0] % 2 == 0);
+    }
 }

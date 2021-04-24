@@ -211,4 +211,52 @@ public class ArraysExercise {
         }
         return result;
     }
+
+    public int[] append(int[] a1, int[] a2) {
+        int[] result = new int[a1.length + a2.length];
+        for (int i = 0; i < result.length; i++) {
+            if (i < a1.length) {
+                result[i] = a1[i];
+            } else {
+                result[i] = a2[i - a1.length];
+            }
+        }
+        return result;
+    }
+
+    public static int[] vowelCount(String content) {
+        int[] result = new int[5];
+        for (char item : content.toCharArray()) {
+            if (item == 'a') {
+                result[0]++;
+            }
+            if (item == 'e') {
+                result[1]++;
+            }
+            if (item == 'i') {
+                result[2]++;
+            }
+            if (item == 'o') {
+                result[3]++;
+            }
+            if (item == 'u') {
+                result[4]++;
+            }
+        }
+        return result;
+    }
+
+    public int[] evenBeforeOdd(int[] input) {
+        int[] output = new int[input.length];
+        int evenPos = 0;
+        int oddPos = input.length - 1;
+        for (int item : input) {
+            if (item % 2 == 0) {
+                output[evenPos++] = item;
+            } else {
+                output[oddPos--] = item;
+            }
+        }
+        return output;
+    }
 }
